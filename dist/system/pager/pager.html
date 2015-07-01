@@ -1,0 +1,22 @@
+<template>
+        <ul class="pagination">
+            <li>
+                <a href="" click.delegate="prev()" aria-label="Previous">
+                    <span aria-hidden="true">
+                        &laquo;
+                    </span>
+                </a>
+            </li>
+            <li repeat.for="curPage of pages" class="${ curPage == $parent.page ? 'active' : '' }">
+                <!-- This span is an IE bug fix - if a &raquo; or many other chars are used before an interpolation for some reason that interpolation fails, following ones are fine (this is for the same property). Adding an invisible span with an interpolate in it fixes the issue  -->
+                <span style="display:none">${curPage}</span>
+                <a href="" click.delegate="$parent.changePage(curPage)">${curPage}</a></li>
+            <li>
+                <a href="" click.delegate="next()" aria-label="Next">
+                    <span aria-hidden="true">
+                        &raquo;
+                    </span>
+                </a>
+            </li>
+        </ul>
+</template>
