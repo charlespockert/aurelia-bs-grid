@@ -49,7 +49,7 @@
     },
     "dependencies": {
       "bootstrap": "github:twbs/bootstrap@^3.3.5",
-      "gooy/aurelia-compiler": "github:gooy/aurelia-compiler@^0.0.5"
+      "gooy/aurelia-compiler": "github:gooy/aurelia-compiler@^0.0.4"
     }
   }
 }
