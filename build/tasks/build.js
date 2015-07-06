@@ -48,6 +48,20 @@ gulp.task('build-system', ['build-html-system'], function () {
     .pipe(gulp.dest(paths.output + 'system'));
 });
 
+gulp.task('demo', function (callback) {
+  return runSequence('build', ['copy-demo-html', 'copy-demo-js'], callback);
+});
+
+gulp.task('copy-demo-html', function () {
+  return gulp.src(paths.html)
+    .pipe(gulp.dest(paths.demo));
+});
+
+gulp.task('copy-demo-js', function () {
+  return gulp.src(paths.source)
+    .pipe(gulp.dest(paths.demo));
+});
+
 gulp.task('build', function(callback) {
   return runSequence(
     'clean',
