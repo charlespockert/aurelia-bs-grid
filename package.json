@@ -9,11 +9,14 @@
   ],
   "homepage": "http://github.com/charlespockert",
   "bugs": {
-    "url": "https://github.com/aurelia/skeleton-plugin/issues"
+    "url": "https://github.com/charlespockert/aurelia-bs-grid/issues"
   },
   "license": "MIT",
   "author": "Charles Pockert <charles.pockert@googlemail.com>",
-  "main": "dist/commonjs/index.js",
+  "directories": {
+    "lib": "src",
+    "build": "dist"
+  },
   "repository": {
     "type": "git",
     "url": "http://github.com/charlespockert/aurelia-bs-grid"
@@ -43,7 +46,6 @@
   },
   "jspm": {
     "main": "index",
-    "format": "register",
     "directories": {
       "lib": "dist/system"
     },
