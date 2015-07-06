@@ -1,7 +1,7 @@
 System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'], function (_export) {
 	'use strict';
 
-	var bindable, inject, skipContentProcessing, GridColumn, Compiler, Grid;
+	var bindable, inject, skipContentProcessing, ObserverLocator, GridColumn, Compiler, Grid;
 
 	var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -14,6 +14,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 			bindable = _aureliaFramework.bindable;
 			inject = _aureliaFramework.inject;
 			skipContentProcessing = _aureliaFramework.skipContentProcessing;
+			ObserverLocator = _aureliaFramework.ObserverLocator;
 		}, function (_gridColumn) {
 			GridColumn = _gridColumn.GridColumn;
 		}, function (_gooyAureliaCompiler) {
@@ -23,7 +24,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 			Grid = (function () {
 				var _instanceInitializers = {};
 
-				function Grid(element, compiler) {
+				function Grid(element, compiler, observerLocator) {
 					_classCallCheck(this, _Grid);
 
 					_defineDecoratedPropertyDescriptor(this, 'serverPaging', _instanceInitializers);
@@ -70,6 +71,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 
 					this.element = element;
 					this.compiler = compiler;
+					this.observerLocator = observerLocator;
 
 					this.processUserTemplate();
 				}
@@ -257,6 +259,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 						if (this.pageable && !this.serverPaging && !this.serverSorting) {
 							this.cache = result.data;
 							this.applyPage();
+							this.watchForChanges();
 						} else {
 							this.data = result.data;
 						}
@@ -264,6 +267,21 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 						this.count = result.count;
 
 						this.updatePager();
+					}
+				}, {
+					key: 'watchForChanges',
+					value: function watchForChanges() {
+						var _this3 = this;
+
+						if (this.subscription) this.subscription();
+
+						this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
+							if (_this3.data) {
+								_this3.applyPage();
+								_this3.count = _this3.cache.length;
+								_this3.updatePager();
+							}
+						});
 					}
 				}, {
 					key: 'updatePager',
@@ -378,7 +396,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 					enumerable: true
 				}], null, _instanceInitializers);
 
-				Grid = inject(Element, Compiler)(Grid) || Grid;
+				Grid = inject(Element, Compiler, ObserverLocator)(Grid) || Grid;
 				Grid = skipContentProcessing()(Grid) || Grid;
 				return Grid;
 			})();

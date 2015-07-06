@@ -1,9 +1,9 @@
-import {bindable, inject, skipContentProcessing } from 'aurelia-framework';
+import {bindable, inject, skipContentProcessing, ObserverLocator } from 'aurelia-framework';
 import {GridColumn} from './grid-column';
 import {Compiler} from 'gooy/aurelia-compiler';
 
 @skipContentProcessing()
-@inject(Element, Compiler)
+@inject(Element, Compiler, ObserverLocator)
 export class Grid {
 
 	/* == Options == */
@@ -49,9 +49,10 @@ export class Grid {
 	data = [];
 	count = 0;
 
-	constructor(element, compiler) {
+	constructor(element, compiler, observerLocator) {
 		this.element = element;
 		this.compiler = compiler;
+		this.observerLocator = observerLocator;
 
 		// Grab user template from element
 		this.processUserTemplate();
@@ -267,6 +268,8 @@ export class Grid {
 			// Cache the data and slice into the array
 			this.cache = result.data;
 			this.applyPage();
+			this.watchForChanges();
+
 		} else {
 			this.data = result.data;
 		}
@@ -276,6 +279,22 @@ export class Grid {
 	    // Update the pager - maybe the grid options should contain an update callback instead of reffing the
 	    // pager into the current VM?
 	    this.updatePager();
+	}
+
+	watchForChanges() {
+	    if (this.subscription)
+	        this.subscription();
+
+	    // We can update the pager automagically
+	    this.subscription = this.observerLocator
+	        .getArrayObserver(this.cache)
+	        .subscribe((splices) => {			
+				if(this.data){
+					this.applyPage();
+					this.count = this.cache.length;
+					this.updatePager();
+				}
+	        });
 	}
 
 	updatePager() {

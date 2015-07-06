@@ -14,7 +14,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 	var Grid = (function () {
 		var _instanceInitializers = {};
 
-		function Grid(element, compiler) {
+		function Grid(element, compiler, observerLocator) {
 			_classCallCheck(this, _Grid);
 
 			_defineDecoratedPropertyDescriptor(this, 'serverPaging', _instanceInitializers);
@@ -61,6 +61,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 			this.element = element;
 			this.compiler = compiler;
+			this.observerLocator = observerLocator;
 
 			this.processUserTemplate();
 		}
@@ -248,6 +249,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				if (this.pageable && !this.serverPaging && !this.serverSorting) {
 					this.cache = result.data;
 					this.applyPage();
+					this.watchForChanges();
 				} else {
 					this.data = result.data;
 				}
@@ -255,6 +257,21 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				this.count = result.count;
 
 				this.updatePager();
+			}
+		}, {
+			key: 'watchForChanges',
+			value: function watchForChanges() {
+				var _this3 = this;
+
+				if (this.subscription) this.subscription();
+
+				this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
+					if (_this3.data) {
+						_this3.applyPage();
+						_this3.count = _this3.cache.length;
+						_this3.updatePager();
+					}
+				});
 			}
 		}, {
 			key: 'updatePager',
@@ -369,7 +386,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			enumerable: true
 		}], null, _instanceInitializers);
 
-		Grid = (0, _aureliaFramework.inject)(Element, _gooyAureliaCompiler.Compiler)(Grid) || Grid;
+		Grid = (0, _aureliaFramework.inject)(Element, _gooyAureliaCompiler.Compiler, _aureliaFramework.ObserverLocator)(Grid) || Grid;
 		Grid = (0, _aureliaFramework.skipContentProcessing)()(Grid) || Grid;
 		return Grid;
 	})();
