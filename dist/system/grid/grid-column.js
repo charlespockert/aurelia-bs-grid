@@ -11,6 +11,8 @@ System.register([], function (_export) {
 			GridColumn = function GridColumn(config, template) {
 				_classCallCheck(this, GridColumn);
 
+				this.specialColumns = ["heading", "nosort"];
+
 				this.template = template;
 				this.field = config.field;
 
@@ -18,6 +20,12 @@ System.register([], function (_export) {
 
 				this.heading = config.heading || config.field;
 				this.nosort = config.nosort || false;
+
+				for (var prop in config) {
+					if (config.hasOwnProperty(prop) && this.specialColumns.indexOf(prop) < 0) {
+						this[prop] = config[prop];
+					}
+				}
 			};
 
 			_export("GridColumn", GridColumn);

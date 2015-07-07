@@ -9,6 +9,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var GridColumn = function GridColumn(config, template) {
 	_classCallCheck(this, GridColumn);
 
+	this.specialColumns = ["heading", "nosort"];
+
 	this.template = template;
 	this.field = config.field;
 
@@ -16,6 +18,12 @@ var GridColumn = function GridColumn(config, template) {
 
 	this.heading = config.heading || config.field;
 	this.nosort = config.nosort || false;
+
+	for (var prop in config) {
+		if (config.hasOwnProperty(prop) && this.specialColumns.indexOf(prop) < 0) {
+			this[prop] = config[prop];
+		}
+	}
 };
 
 exports.GridColumn = GridColumn;

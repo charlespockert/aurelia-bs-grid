@@ -10,6 +10,8 @@ define(["exports"], function (exports) {
 	var GridColumn = function GridColumn(config, template) {
 		_classCallCheck(this, GridColumn);
 
+		this.specialColumns = ["heading", "nosort"];
+
 		this.template = template;
 		this.field = config.field;
 
@@ -17,6 +19,12 @@ define(["exports"], function (exports) {
 
 		this.heading = config.heading || config.field;
 		this.nosort = config.nosort || false;
+
+		for (var prop in config) {
+			if (config.hasOwnProperty(prop) && this.specialColumns.indexOf(prop) < 0) {
+				this[prop] = config[prop];
+			}
+		}
 	};
 
 	exports.GridColumn = GridColumn;

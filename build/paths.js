@@ -11,5 +11,5 @@ module.exports = {
   doc:'./doc',
   e2eSpecsSrc: 'test/e2e/src/*.js',
   e2eSpecsDist: 'test/e2e/dist/',
-  demo: '../aurelia-grid/jspm_packages/github/charlespockert/aurelia-bs-grid@master/',
+  demo: '../aurelia-grid/jspm_packages/github/charlespockert/aurelia-bs-grid@0.0.1/',
 };
