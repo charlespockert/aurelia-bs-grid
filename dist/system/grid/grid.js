@@ -150,6 +150,8 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 						});
 
 						this.compiler.compile(table, this, undefined, fragment);
+
+						this.noRowsMessageChanged();
 					}
 				}, {
 					key: 'addColumn',

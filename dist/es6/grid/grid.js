@@ -141,6 +141,9 @@ export class Grid {
 
 		// Compile
 		this.compiler.compile(table, this, undefined, fragment);
+
+		// HACK: why is the change handler not firing for noRowsMessage?
+		this.noRowsMessageChanged();
 	}
 
 	addColumn(col) {
