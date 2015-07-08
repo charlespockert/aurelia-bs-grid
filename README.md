@@ -197,3 +197,9 @@ Auto-refreshes the data source when the grid is attached to the DOM
 **loading-message="Please wait... loading"**
 
 A message to show when the grid is in the middle of loading
+
+## Methods
+
+**refresh()**
+
+Causes the grid to call it's `read` method again. Useful when you have changed some criteria (a quick filter box for example) and you want the grid to re-query the server data.
