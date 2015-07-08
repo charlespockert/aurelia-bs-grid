@@ -12,7 +12,7 @@ http://charlespockert.github.io/aurelia-grid/
   ```
   jspm install github:charlespockert/aurelia-bs-modal
   ```
-2. In order to import the plugin you need to be [manually bootstrapping Aurelia]((http://aurelia.io/docs#startup-and-configuration).
+2. In order to import the plugin you need to be [manually bootstrapping Aurelia](http://aurelia.io/docs#startup-and-configuration).
 
   Open your `index.html` or equivalent and find your `aurelia-app` attribute and change it to:
 
