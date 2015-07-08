@@ -19,9 +19,7 @@ http://charlespockert.github.io/aurelia-grid/
   ```html
     <body aurelia-app="main">
   ```
-3. Create a `main.js` file in your src directory and import  
-  
-  Import the plugin using standard plugin import syntax:
+3. Create a `main.js` file in your src directory and import the plugin using the `aurelia` configuration object 
 
   ```javascript
   export function configure(aurelia) {
@@ -29,7 +27,7 @@ http://charlespockert.github.io/aurelia-grid/
       .standardConfiguration()
       .developmentLogging()
       // Install the plugin
-      .plugin('aurelia-bs-grid');
+      .plugin('charlespockert/aurelia-bs-grid');
     aurelia.start().then(a => a.setRoot());
   }
   ```
