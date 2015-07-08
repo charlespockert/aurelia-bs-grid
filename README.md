@@ -10,7 +10,7 @@ http://charlespockert.github.io/aurelia-grid/
 1. Install the plugin into your project using jspm
   
   ```
-  jspm install github:charlespockert/aurelia-bs-modal
+  jspm install github:charlespockert/aurelia-bs-grid
   ```
 2. In order to import the plugin you need to be [manually bootstrapping Aurelia](http://aurelia.io/docs#startup-and-configuration).
 
