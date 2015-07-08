@@ -1,7 +1,7 @@
 <template>
     <require from="../pager/pager"></require>
     <div style="position:relative;">
-        <table class="table table-hover table-striped table-responsive selectable" show.bind="!showNoRowsMessage || (showNoRowsMessage && cache.length > 0)">
+        <table class="table table-hover table-striped table-responsive selectable" show.bind="!showNoRowsMessage || (showNoRowsMessage && (data.lenth > 0 || cache.length > 0))">
             <tbody ref="tbody">
                 <tr if.bind="showColumnFilters">
                     <th repeat.for="$column of columns">
@@ -25,12 +25,12 @@
             </tbody>
         </table>
         <div if.bind="pageable" class="text-center">
-            <div show.bind="cache.length > 0">
+            <div show.bind="(data.lenth > 0 || cache.length > 0)">
                 <pager num-to-show.bind="10" pager.ref="pager" on-page-changed.call="pageChanged($event)"></pager>
             </div>
         </div>
         <!-- No rows message -->
-        <div if.bind="showNoRowsMessage && cache.length == 0" class="alert alert-warning">${ noRowsMessage }</div>
+        <div if.bind="showNoRowsMessage && (data.lenth === 0 || cache.length === 0)" class="alert alert-warning">${ noRowsMessage }</div>
         <div class="overlay" if.bind="loading"></div>
         <div class="overlay-message" if.bind="loading">
             <i class="fa fa-spinner fa-spin"></i>
