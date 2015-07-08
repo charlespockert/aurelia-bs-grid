@@ -1,14 +1,23 @@
 <template>
     <require from="../pager/pager"></require>
     <div style="position:relative;">
-        <table class="table table-hover table-striped table-responsive selectable" show.bind="!showNoRowsMessage || (showNoRowsMessage && (data.length > 0 || cache.length > 0))">
+        <table class="table table-hover table-striped table-responsive selectable" show.bind="!showNoRowsMessage || (showNoRowsMessage && cache.length > 0)">
             <tbody ref="tbody">
-                <tr role="button">
+                <tr if.bind="showColumnFilters">
+                    <th repeat.for="$column of columns">
+                        <input class="form-control" value.bind="$column.filterValue" input.delegate="$parent.updateFilters()"></input>
+                    </th>
+                </tr>
+                 <tr role="button">
                     <th repeat.for="$column of columns">
                         <a if.bind="$column.nosort == false" click.trigger="$parent.sortChanged($column.field)">${ $column.heading }</a>
                         <span if.bind="$column.nosort == true">${ $column.heading }</span>
-                        <img if.bind="$parent.sorting[$column.field] === 'desc'" src="img/bullet_arrow_down.png" />
-                        <img if.bind="$parent.sorting[$column.field] === 'asc'" src="img/bullet_arrow_up.png" />
+                        <svg if.bind="$parent.sorting[$column.field] === 'desc'" height="8" width="10">
+                              <polygon points="0,0 8,0 4,8" style="fill:gainsboro;stroke:gray;stroke-width:1;" />
+                        </svg>
+                        <svg if.bind="$parent.sorting[$column.field] === 'asc'" height="8" width="10">
+                              <polygon points="0,8 8,8 4,0" style="fill:gainsboro;stroke:gray;stroke-width:1;" />
+                        </svg>
                     </th>
                 </tr>
                 <tr role="button" click.delegate="$parent.select($item)">
@@ -16,12 +25,12 @@
             </tbody>
         </table>
         <div if.bind="pageable" class="text-center">
-            <div show.bind="data.length > 0 || cache.length > 0">
+            <div show.bind="cache.length > 0">
                 <pager num-to-show.bind="10" pager.ref="pager" on-page-changed.call="pageChanged($event)"></pager>
             </div>
         </div>
         <!-- No rows message -->
-        <div if.bind="showNoRowsMessage && (data.length == 0 || cache.length == 0)" class="alert alert-warning">${ noRowsMessage }</div>
+        <div if.bind="showNoRowsMessage && cache.length == 0" class="alert alert-warning">${ noRowsMessage }</div>
         <div class="overlay" if.bind="loading"></div>
         <div class="overlay-message" if.bind="loading">
             <i class="fa fa-spinner fa-spin"></i>

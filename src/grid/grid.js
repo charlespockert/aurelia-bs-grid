@@ -8,6 +8,13 @@ export class Grid {
 
 	/* == Options == */
 
+	// Mode
+	@bindable remoteData = false;
+
+	// Filtering
+	@bindable showColumnFilters = false;
+	@bindable serverFiltering = false;
+
 	// Pagination
 	@bindable serverPaging = false;
 	@bindable pageable = true;
@@ -146,6 +153,7 @@ export class Grid {
 		this.noRowsMessageChanged();
 	}
 
+	/* === Column handling === */
 	addColumn(col) {
 
 		// No-sort if grid is not sortable
@@ -163,7 +171,7 @@ export class Grid {
 		if(this.cache.length == 0)
 			this.refresh();
 		else		
-			this.applyPage();
+			this.filterSortPage();
 	}
 
 	pageSizeChanged() {
@@ -171,39 +179,92 @@ export class Grid {
 		this.updatePager();
 	}
 
-	applyPage() {
-		if(!this.pageable) return;
-		
-		if(!this.serverPaging) {
-			var start = (Number(this.pageNumber) - 1) * Number(this.pageSize);
-			this.data = this.cache.slice(start, start + Number(this.pageSize));
-		} 
+	filterSortPage() {
+		// Applies filter, sort then page
+
+		// First don't watch for array mutation...
+		this.dontWatchForChanges();
+
+		// Load data
+		this.refresh();
+
+		// 1. First filter the data down to the set we want, if we are using local data
+		var tempData = this.cache;
+
+		if(this.showColumnFilters && !this.serverFiltering)
+			tempData = this.applyFilter(tempData);
+
+		// Count the data now before the sort/page
+		this.count = tempData.length;
+
+		// 2. Now sort the data
+		if(this.sortable && !this.serverSorting)
+			tempData = this.applySort(tempData);
+
+		// 3. Now apply paging
+		if(this.pageable && !this.serverPaging)
+			tempData = this.applyPage(tempData);
+
+		this.data = tempData;
+		this.watchForChanges();
 
 		this.updatePager();
 	}
 
+	applyPage(data) {
+		var start = (Number(this.pageNumber) - 1) * Number(this.pageSize);
+		data = data.slice(start, start + Number(this.pageSize));
+
+		return data;
+	}
+
+
+	updatePager() {
+		this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
+	}
+
 	/* === Sorting === */
-	sortByProperty(prop, dir) {
-	   return (a,b) => {
-	        if (typeof a[prop] == "number") {
-	            return (a[prop] - b[prop]) * dir;
-	        } else {
-	            return ((a[prop] < b[prop]) ? -1 : ((a[prop] > b[prop]) ? 1 : 0)) * dir;
-	        }
+	fieldSorter(fields) {
+	    return function (a, b) {
+	        return fields
+	            .map(function (o) {
+	                var dir = 1;
+	                if (o[0] === '-') {
+	                   dir = -1;
+	                   o = o.substring(1);
+	                }
+	                if (a[o] > b[o]) return dir;
+	                if (a[o] < b[o]) return -(dir);
+	                return 0;
+	            })
+	            .reduce(function firstNonZeroValue (p,n) {
+	                return p ? p : n;
+	            }, 0);
 	    };
-	}	
+	}
+
+	// sortByProperty(prop, dir) {
+	//    return (a,b) => {
+	//         if (typeof a[prop] == "number") {
+	//             return (a[prop] - b[prop]) * dir;
+	//         } else {
+	//             return ((a[prop] < b[prop]) ? -1 : ((a[prop] > b[prop]) ? 1 : 0)) * dir;
+	//         }
+	//     };
+	// }	
 
 	sortChanged(field) {
+
 		// Determine new sort
 		var newSort = undefined;
 
+		// Figure out which way this field should be sorting
 	    switch(this.sorting[field]) {
 	    	case "asc":
 	    			newSort = "desc";
 	    		break;
 	    		case "desc":
-	    			if(!this.serverSorting)
-	    				newSort = "asc";
+	    			newSort = "";
 	    		break;
 	    		default:
 	    			newSort = "asc";
@@ -211,24 +272,60 @@ export class Grid {
 	    }
 
 	    this.sorting[field] = newSort;
-		this.applySort(field);
+
+	    // Apply the new sort
+		this.filterSortPage();
 	}
 
-	applySort(field) {
+	applySort(data) {
 
-		var newSort = this.sorting[field];
-	    var dir = newSort == 'asc' ? 1 : -1;
+		// Format the sort fields
+		var fields = [];
+
+		for(var prop in this.sorting) {
+			if(this.sorting[prop] !== "")
+				fields.push(this.sorting[prop] === "asc" ? (prop) : ("-" + prop));
+		}
 
 		// If server sort, just refresh
-		if (this.serverSorting)
-		{
-		    this.refresh();
-		}
-		else {
-			// Client side sort, first sort the cache, then page
-			this.cache.sort(this.sortByProperty(field, dir));
-		    this.applyPage();
-		}
+		data = data.sort(this.fieldSorter(fields));
+
+		return data;
+	}
+
+	/* === Filtering === */
+	applyFilter(data) {
+		return data.filter((row) => {
+			var include = true;
+
+			for (var i = this.columns.length - 1; i >= 0; i--) {
+				var col = this.columns[i];
+
+				if(col.filterValue !== "" && row[col.field].toString().indexOf(col.filterValue) === -1) {
+					include = false;
+				}
+			}
+
+			return include;
+		});
+	}
+
+	getFilterColumns() {
+		var cols = [];
+
+		for (var i = this.columns.length - 1; i >= 0; i--) {
+			var col = this.columns[i];
+
+			if(col.filterValue !== "") {
+				cols.push({ field: col.field, value: col.filterValue });
+			}
+		}		
+
+		return cols;
+	}
+
+	updateFilters() {
+		this.filterSortPage();
 	}
 
 	/* === Data === */
@@ -243,7 +340,8 @@ export class Grid {
 		// Try to read from the data adapter
 		this.read({ 
 			sorting: this.sorting, 
-			paging: { page: this.pageNumber, size: Number(this.pageSize) }
+			paging: { page: this.pageNumber, size: Number(this.pageSize) },
+			filtering: this.getFilterColumns() 
 		})
 		.then((result) => {
 
@@ -267,10 +365,11 @@ export class Grid {
 		var data = result.data;
 
 		// Is the data being paginated on the client side?
-		if(this.pageable && !this.serverPaging && !this.serverSorting) {
+		// TODO: Work out when we should we use the cache... ever? If it's local data
+		if(this.pageable && !this.serverPaging && !this.serverSorting && !this.serverFiltering) {
 			// Cache the data and slice into the array
 			this.cache = result.data;
-			this.applyPage();
+			this.filterSortPage();
 			this.watchForChanges();
 
 		} else {
@@ -285,23 +384,22 @@ export class Grid {
 	}
 
 	watchForChanges() {
-	    if (this.subscription)
-	        this.subscription();
+
+		this.dontWatchForChanges();
 
 	    // We can update the pager automagically
 	    this.subscription = this.observerLocator
 	        .getArrayObserver(this.cache)
 	        .subscribe((splices) => {			
 				if(this.data){
-					this.applyPage();
-					this.count = this.cache.length;
-					this.updatePager();
+					this.filterSortPage();
 				}
 	        });
 	}
 
-	updatePager() {
-		this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
+	dontWatchForChanges() {
+		if(this.subscription)
+			this.subscription();
 	}
 
 	/* === Selection === */

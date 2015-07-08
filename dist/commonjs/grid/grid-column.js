@@ -18,6 +18,7 @@ var GridColumn = function GridColumn(config, template) {
 
 	this.heading = config.heading || config.field;
 	this.nosort = config.nosort || false;
+	this.filterValue = "";
 
 	for (var prop in config) {
 		if (config.hasOwnProperty(prop) && this.specialColumns.indexOf(prop) < 0) {

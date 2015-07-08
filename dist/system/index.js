@@ -5,7 +5,6 @@ System.register([], function (_export) {
 
   function configure(aurelia) {
     aurelia.globalizeResources('./grid/grid');
-    aurelia.globalizeResources('./pager/pager');
   }
 
   return {

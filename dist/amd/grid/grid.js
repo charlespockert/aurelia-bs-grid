@@ -17,6 +17,12 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		function Grid(element, compiler, observerLocator) {
 			_classCallCheck(this, _Grid);
 
+			_defineDecoratedPropertyDescriptor(this, 'remoteData', _instanceInitializers);
+
+			_defineDecoratedPropertyDescriptor(this, 'showColumnFilters', _instanceInitializers);
+
+			_defineDecoratedPropertyDescriptor(this, 'serverFiltering', _instanceInitializers);
+
 			_defineDecoratedPropertyDescriptor(this, 'serverPaging', _instanceInitializers);
 
 			_defineDecoratedPropertyDescriptor(this, 'pageable', _instanceInitializers);
@@ -156,7 +162,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 				this.pageNumber = Number(page);
 
-				if (this.cache.length == 0) this.refresh();else this.applyPage();
+				if (this.cache.length == 0) this.refresh();else this.filterSortPage();
 			}
 		}, {
 			key: 'pageSizeChanged',
@@ -165,26 +171,56 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				this.updatePager();
 			}
 		}, {
-			key: 'applyPage',
-			value: function applyPage() {
-				if (!this.pageable) return;
+			key: 'filterSortPage',
+			value: function filterSortPage() {
+				this.dontWatchForChanges();
 
-				if (!this.serverPaging) {
-					var start = (Number(this.pageNumber) - 1) * Number(this.pageSize);
-					this.data = this.cache.slice(start, start + Number(this.pageSize));
-				}
+				this.refresh();
+
+				var tempData = this.cache;
+
+				if (this.showColumnFilters && !this.serverFiltering) tempData = this.applyFilter(tempData);
+
+				this.count = tempData.length;
+
+				if (this.sortable && !this.serverSorting) tempData = this.applySort(tempData);
+
+				if (this.pageable && !this.serverPaging) tempData = this.applyPage(tempData);
+
+				this.data = tempData;
+				this.watchForChanges();
 
 				this.updatePager();
 			}
 		}, {
-			key: 'sortByProperty',
-			value: function sortByProperty(prop, dir) {
+			key: 'applyPage',
+			value: function applyPage(data) {
+				var start = (Number(this.pageNumber) - 1) * Number(this.pageSize);
+				data = data.slice(start, start + Number(this.pageSize));
+
+				return data;
+			}
+		}, {
+			key: 'updatePager',
+			value: function updatePager() {
+				this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
+			}
+		}, {
+			key: 'fieldSorter',
+			value: function fieldSorter(fields) {
 				return function (a, b) {
-					if (typeof a[prop] == 'number') {
-						return (a[prop] - b[prop]) * dir;
-					} else {
-						return (a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0) * dir;
-					}
+					return fields.map(function (o) {
+						var dir = 1;
+						if (o[0] === '-') {
+							dir = -1;
+							o = o.substring(1);
+						}
+						if (a[o] > b[o]) return dir;
+						if (a[o] < b[o]) return -dir;
+						return 0;
+					}).reduce(function firstNonZeroValue(p, n) {
+						return p ? p : n;
+					}, 0);
 				};
 			}
 		}, {
@@ -197,7 +233,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 						newSort = 'desc';
 						break;
 					case 'desc':
-						if (!this.serverSorting) newSort = 'asc';
+						newSort = '';
 						break;
 					default:
 						newSort = 'asc';
@@ -205,26 +241,65 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				}
 
 				this.sorting[field] = newSort;
-				this.applySort(field);
+
+				this.filterSortPage();
 			}
 		}, {
 			key: 'applySort',
-			value: function applySort(field) {
+			value: function applySort(data) {
+				var fields = [];
 
-				var newSort = this.sorting[field];
-				var dir = newSort == 'asc' ? 1 : -1;
-
-				if (this.serverSorting) {
-					this.refresh();
-				} else {
-					this.cache.sort(this.sortByProperty(field, dir));
-					this.applyPage();
+				for (var prop in this.sorting) {
+					if (this.sorting[prop] !== '') fields.push(this.sorting[prop] === 'asc' ? prop : '-' + prop);
 				}
+
+				data = data.sort(this.fieldSorter(fields));
+
+				return data;
+			}
+		}, {
+			key: 'applyFilter',
+			value: function applyFilter(data) {
+				var _this2 = this;
+
+				return data.filter(function (row) {
+					var include = true;
+
+					for (var i = _this2.columns.length - 1; i >= 0; i--) {
+						var col = _this2.columns[i];
+
+						if (col.filterValue !== '' && row[col.field].toString().indexOf(col.filterValue) === -1) {
+							include = false;
+						}
+					}
+
+					return include;
+				});
+			}
+		}, {
+			key: 'getFilterColumns',
+			value: function getFilterColumns() {
+				var cols = [];
+
+				for (var i = this.columns.length - 1; i >= 0; i--) {
+					var col = this.columns[i];
+
+					if (col.filterValue !== '') {
+						cols.push({ field: col.field, value: col.filterValue });
+					}
+				}
+
+				return cols;
+			}
+		}, {
+			key: 'updateFilters',
+			value: function updateFilters() {
+				this.filterSortPage();
 			}
 		}, {
 			key: 'refresh',
 			value: function refresh() {
-				var _this2 = this;
+				var _this3 = this;
 
 				if (!this.read) throw new Error('No read method specified for grid');
 
@@ -232,15 +307,16 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 				this.read({
 					sorting: this.sorting,
-					paging: { page: this.pageNumber, size: Number(this.pageSize) }
+					paging: { page: this.pageNumber, size: Number(this.pageSize) },
+					filtering: this.getFilterColumns()
 				}).then(function (result) {
-					_this2.handleResult(result);
+					_this3.handleResult(result);
 
-					_this2.loading = false;
+					_this3.loading = false;
 				}, function (result) {
-					if (_this2.onReadError) _this2.onReadError(result);
+					if (_this3.onReadError) _this3.onReadError(result);
 
-					_this2.loading = false;
+					_this3.loading = false;
 				});
 			}
 		}, {
@@ -248,9 +324,9 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			value: function handleResult(result) {
 				var data = result.data;
 
-				if (this.pageable && !this.serverPaging && !this.serverSorting) {
+				if (this.pageable && !this.serverPaging && !this.serverSorting && !this.serverFiltering) {
 					this.cache = result.data;
-					this.applyPage();
+					this.filterSortPage();
 					this.watchForChanges();
 				} else {
 					this.data = result.data;
@@ -263,22 +339,20 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		}, {
 			key: 'watchForChanges',
 			value: function watchForChanges() {
-				var _this3 = this;
+				var _this4 = this;
 
-				if (this.subscription) this.subscription();
+				this.dontWatchForChanges();
 
 				this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
-					if (_this3.data) {
-						_this3.applyPage();
-						_this3.count = _this3.cache.length;
-						_this3.updatePager();
+					if (_this4.data) {
+						_this4.filterSortPage();
 					}
 				});
 			}
 		}, {
-			key: 'updatePager',
-			value: function updatePager() {
-				this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
+			key: 'dontWatchForChanges',
+			value: function dontWatchForChanges() {
+				if (this.subscription) this.subscription();
 			}
 		}, {
 			key: 'select',
@@ -290,6 +364,27 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			value: function noRowsMessageChanged() {
 				this.showNoRowsMessage = this.noRowsMessage !== '';
 			}
+		}, {
+			key: 'remoteData',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return false;
+			},
+			enumerable: true
+		}, {
+			key: 'showColumnFilters',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return false;
+			},
+			enumerable: true
+		}, {
+			key: 'serverFiltering',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return false;
+			},
+			enumerable: true
 		}, {
 			key: 'serverPaging',
 			decorators: [_aureliaFramework.bindable],
