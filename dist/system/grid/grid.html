@@ -5,7 +5,7 @@
             <tbody ref="tbody">
                 <tr if.bind="showColumnFilters">
                     <th repeat.for="$column of columns">
-                        <input class="form-control" value.bind="$column.filterValue" input.delegate="$parent.updateFilters()"></input>
+                        <input if.bind="$column.showFilter" class="form-control" value.bind="$column.filterValue" input.delegate="$parent.updateFilters()"></input>
                     </th>
                 </tr>
                  <tr role="button">
