@@ -17,7 +17,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		function Grid(element, compiler, observerLocator) {
 			_classCallCheck(this, _Grid);
 
-			_defineDecoratedPropertyDescriptor(this, 'remoteData', _instanceInitializers);
+			_defineDecoratedPropertyDescriptor(this, 'initialLoad', _instanceInitializers);
 
 			_defineDecoratedPropertyDescriptor(this, 'showColumnFilters', _instanceInitializers);
 
@@ -159,10 +159,8 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		}, {
 			key: 'pageChanged',
 			value: function pageChanged(page) {
-
 				this.pageNumber = Number(page);
-
-				if (this.cache.length == 0) this.refresh();else this.filterSortPage();
+				this.refresh();
 			}
 		}, {
 			key: 'pageSizeChanged',
@@ -172,12 +170,8 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			}
 		}, {
 			key: 'filterSortPage',
-			value: function filterSortPage() {
-				this.dontWatchForChanges();
-
-				this.refresh();
-
-				var tempData = this.cache;
+			value: function filterSortPage(data) {
+				var tempData = data;
 
 				if (this.showColumnFilters && !this.serverFiltering) tempData = this.applyFilter(tempData);
 
@@ -188,9 +182,10 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				if (this.pageable && !this.serverPaging) tempData = this.applyPage(tempData);
 
 				this.data = tempData;
-				this.watchForChanges();
 
 				this.updatePager();
+
+				this.watchForChanges();
 			}
 		}, {
 			key: 'applyPage',
@@ -242,7 +237,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 				this.sorting[field] = newSort;
 
-				this.filterSortPage();
+				this.refresh();
 			}
 		}, {
 			key: 'applySort',
@@ -294,14 +289,23 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		}, {
 			key: 'updateFilters',
 			value: function updateFilters() {
-				this.filterSortPage();
+				this.refresh();
 			}
 		}, {
 			key: 'refresh',
 			value: function refresh() {
+				this.dontWatchForChanges();
+
+				if (this.serverPaging || this.serverSorting || this.serverFiltering || !this.initialLoad) this.getData();else this.filterSortPage(this.cache);
+			}
+		}, {
+			key: 'getData',
+			value: function getData() {
 				var _this3 = this;
 
 				if (!this.read) throw new Error('No read method specified for grid');
+
+				this.initialLoad = true;
 
 				this.loading = true;
 
@@ -326,10 +330,10 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 				if (this.pageable && !this.serverPaging && !this.serverSorting && !this.serverFiltering) {
 					this.cache = result.data;
-					this.filterSortPage();
-					this.watchForChanges();
+					this.filterSortPage(this.cache);
 				} else {
 					this.data = result.data;
+					this.filterSortPage(this.data);
 				}
 
 				this.count = result.count;
@@ -344,9 +348,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				this.dontWatchForChanges();
 
 				this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
-					if (_this4.data) {
-						_this4.filterSortPage();
-					}
+					_this4.refresh();
 				});
 			}
 		}, {
@@ -365,7 +367,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				this.showNoRowsMessage = this.noRowsMessage !== '';
 			}
 		}, {
-			key: 'remoteData',
+			key: 'initialLoad',
 			decorators: [_aureliaFramework.bindable],
 			initializer: function initializer() {
 				return false;

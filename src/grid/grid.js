@@ -8,8 +8,8 @@ export class Grid {
 
 	/* == Options == */
 
-	// Mode
-	@bindable remoteData = false;
+	// Initial load flag (for client side)
+	@bindable initialLoad = false;
 
 	// Filtering
 	@bindable showColumnFilters = false;
@@ -165,13 +165,8 @@ export class Grid {
 
 	/* === Paging === */
 	pageChanged(page) {
-
 		this.pageNumber = Number(page);
-
-		if(this.cache.length == 0)
-			this.refresh();
-		else		
-			this.filterSortPage();
+		this.refresh();
 	}
 
 	pageSizeChanged() {
@@ -179,17 +174,10 @@ export class Grid {
 		this.updatePager();
 	}
 
-	filterSortPage() {
+	filterSortPage(data) {
 		// Applies filter, sort then page
-
-		// First don't watch for array mutation...
-		this.dontWatchForChanges();
-
-		// Load data
-		this.refresh();
-
 		// 1. First filter the data down to the set we want, if we are using local data
-		var tempData = this.cache;
+		var tempData = data;
 
 		if(this.showColumnFilters && !this.serverFiltering)
 			tempData = this.applyFilter(tempData);
@@ -206,9 +194,10 @@ export class Grid {
 			tempData = this.applyPage(tempData);
 
 		this.data = tempData;
-		this.watchForChanges();
 
 		this.updatePager();
+		
+		this.watchForChanges();
 	}
 
 	applyPage(data) {
@@ -274,7 +263,7 @@ export class Grid {
 	    this.sorting[field] = newSort;
 
 	    // Apply the new sort
-		this.filterSortPage();
+		this.refresh();
 	}
 
 	applySort(data) {
@@ -325,14 +314,26 @@ export class Grid {
 	}
 
 	updateFilters() {
-		this.filterSortPage();
+		this.refresh();
 	}
 
 	/* === Data === */
 	refresh() {
+		// If we have any server side stuff we need to get the data first
+		this.dontWatchForChanges();
 
+		if(this.serverPaging || this.serverSorting || this.serverFiltering || !this.initialLoad)
+			this.getData();
+		else
+			this.filterSortPage(this.cache);
+
+	}
+
+	getData() {
 		if(!this.read)
 			throw new Error("No read method specified for grid");
+
+		this.initialLoad = true;
 
 		// TODO: Implement progress indicator
 		this.loading = true;
@@ -356,7 +357,6 @@ export class Grid {
 
 			this.loading = false;
 		});
-
 	}
 
 	handleResult(result) {
@@ -367,13 +367,12 @@ export class Grid {
 		// Is the data being paginated on the client side?
 		// TODO: Work out when we should we use the cache... ever? If it's local data
 		if(this.pageable && !this.serverPaging && !this.serverSorting && !this.serverFiltering) {
-			// Cache the data and slice into the array
+			// Cache the data
 			this.cache = result.data;
-			this.filterSortPage();
-			this.watchForChanges();
-
+			this.filterSortPage(this.cache);
 		} else {
 			this.data = result.data;
+			this.filterSortPage(this.data);
 		}
 	
 	    this.count = result.count;
@@ -391,9 +390,7 @@ export class Grid {
 	    this.subscription = this.observerLocator
 	        .getArrayObserver(this.cache)
 	        .subscribe((splices) => {			
-				if(this.data){
-					this.filterSortPage();
-				}
+				this.refresh();
 	        });
 	}
 
