@@ -8,15 +8,15 @@
                         <input if.bind="$column.showFilter" class="form-control" value.bind="$column.filterValue" input.delegate="$parent.updateFilters()"></input>
                     </th>
                 </tr>
-                 <tr role="button">
+                <tr role="button">
                     <th repeat.for="$column of columns">
                         <a if.bind="$column.nosort == false && $parent.sortable" click.trigger="$parent.sortChanged($column.field)">${ $column.heading }</a>
                         <span if.bind="$column.nosort == true || !$parent.sortable">${ $column.heading }</span>
                         <svg if.bind="$parent.sorting[$column.field] === 'desc'" height="8" width="10">
-                              <polygon points="0,0 8,0 4,8" style="fill:gainsboro;stroke:gray;stroke-width:1;" />
+                            <polygon points="0,0 8,0 4,8" style="fill:gainsboro;stroke:gray;stroke-width:1;" />
                         </svg>
                         <svg if.bind="$parent.sorting[$column.field] === 'asc'" height="8" width="10">
-                              <polygon points="0,8 8,8 4,0" style="fill:gainsboro;stroke:gray;stroke-width:1;" />
+                            <polygon points="0,8 8,8 4,0" style="fill:gainsboro;stroke:gray;stroke-width:1;" />
                         </svg>
                     </th>
                 </tr>
@@ -31,9 +31,11 @@
         </div>
         <!-- No rows message -->
         <div if.bind="showNoRowsMessage && count === 0" class="alert alert-warning">${ noRowsMessage }</div>
-        <div class="overlay" if.bind="loading"></div>
-        <div class="overlay-message" if.bind="loading">
-            <i class="fa fa-spinner fa-spin"></i>
+        <div class="overlay" if.bind="loading" style="position: absolute; left: 0; top: 0; min-width:100%; min-height: 100%; height:100%; z-index: 10; background: rgba(0,0,0,0.3);"></div>
+        <div if.bind="loading" class="progress" style="position: absolute; left: 50%; top: 50%; z-index: 11; transform: translate(-50%, -50%); width:10%">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 100%">
+                <span>${ loadingMessage }</span>
+            </div>
         </div>
     </div>
 </template>
