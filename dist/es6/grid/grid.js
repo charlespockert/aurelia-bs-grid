@@ -1,7 +1,8 @@
-import {bindable, inject, skipContentProcessing, ObserverLocator } from 'aurelia-framework';
+import {bindable, inject, skipContentProcessing, ObserverLocator, customElement } from 'aurelia-framework';
 import {GridColumn} from './grid-column';
 import {Compiler} from 'gooy/aurelia-compiler';
 
+@customElement('grid')
 @skipContentProcessing()
 @inject(Element, Compiler, ObserverLocator)
 export class Grid {

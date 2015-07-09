@@ -16,7 +16,7 @@ var Pager = (function () {
 	var _instanceInitializers = {};
 
 	function Pager() {
-		_classCallCheck(this, Pager);
+		_classCallCheck(this, _Pager);
 
 		_defineDecoratedPropertyDescriptor(this, 'onPageChanged', _instanceInitializers);
 
@@ -27,7 +27,9 @@ var Pager = (function () {
 		this.pages = [];
 	}
 
-	_createDecoratedClass(Pager, [{
+	var _Pager = Pager;
+
+	_createDecoratedClass(_Pager, [{
 		key: 'changePage',
 		value: function changePage(page) {
 
@@ -110,6 +112,7 @@ var Pager = (function () {
 		enumerable: true
 	}], null, _instanceInitializers);
 
+	Pager = (0, _aureliaFramework.customElement)('pager')(Pager) || Pager;
 	return Pager;
 })();
 

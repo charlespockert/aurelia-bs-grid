@@ -496,6 +496,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 		Grid = (0, _aureliaFramework.inject)(Element, _gooyAureliaCompiler.Compiler, _aureliaFramework.ObserverLocator)(Grid) || Grid;
 		Grid = (0, _aureliaFramework.skipContentProcessing)()(Grid) || Grid;
+		Grid = (0, _aureliaFramework.customElement)('grid')(Grid) || Grid;
 		return Grid;
 	})();
 

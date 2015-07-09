@@ -1,5 +1,6 @@
-import {bindable} from 'aurelia-framework';
+import {bindable, customElement } from 'aurelia-framework';
 
+@customElement('pager')
 export class Pager {
 
 	// Called when the selected page changes

@@ -1,7 +1,7 @@
 System.register(['aurelia-framework'], function (_export) {
 	'use strict';
 
-	var bindable, Pager;
+	var bindable, customElement, Pager;
 
 	var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -12,13 +12,14 @@ System.register(['aurelia-framework'], function (_export) {
 	return {
 		setters: [function (_aureliaFramework) {
 			bindable = _aureliaFramework.bindable;
+			customElement = _aureliaFramework.customElement;
 		}],
 		execute: function () {
 			Pager = (function () {
 				var _instanceInitializers = {};
 
 				function Pager() {
-					_classCallCheck(this, Pager);
+					_classCallCheck(this, _Pager);
 
 					_defineDecoratedPropertyDescriptor(this, 'onPageChanged', _instanceInitializers);
 
@@ -29,7 +30,9 @@ System.register(['aurelia-framework'], function (_export) {
 					this.pages = [];
 				}
 
-				_createDecoratedClass(Pager, [{
+				var _Pager = Pager;
+
+				_createDecoratedClass(_Pager, [{
 					key: 'changePage',
 					value: function changePage(page) {
 
@@ -112,6 +115,7 @@ System.register(['aurelia-framework'], function (_export) {
 					enumerable: true
 				}], null, _instanceInitializers);
 
+				Pager = customElement('pager')(Pager) || Pager;
 				return Pager;
 			})();
 
