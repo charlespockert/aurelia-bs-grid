@@ -20,8 +20,9 @@ export class Grid {
 	@bindable pageable = true;
 	@bindable pageSize = 10;
 	@bindable page = 1;
+	@bindable pagerSize = 10;
 	pageNumber = 1;
-
+	
 	// Sortination
 	@bindable serverSorting = false;
 	@bindable sortable = true;
@@ -196,7 +197,7 @@ export class Grid {
 		this.data = tempData;
 
 		this.updatePager();
-		
+
 		this.watchForChanges();
 	}
 

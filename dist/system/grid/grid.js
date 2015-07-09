@@ -41,6 +41,8 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 
 					_defineDecoratedPropertyDescriptor(this, 'page', _instanceInitializers);
 
+					_defineDecoratedPropertyDescriptor(this, 'pagerSize', _instanceInitializers);
+
 					this.pageNumber = 1;
 
 					_defineDecoratedPropertyDescriptor(this, 'serverSorting', _instanceInitializers);
@@ -423,6 +425,13 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 					decorators: [bindable],
 					initializer: function initializer() {
 						return 1;
+					},
+					enumerable: true
+				}, {
+					key: 'pagerSize',
+					decorators: [bindable],
+					initializer: function initializer() {
+						return 10;
 					},
 					enumerable: true
 				}, {
