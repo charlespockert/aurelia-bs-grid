@@ -3,7 +3,7 @@
 An Aurelia based data-grid control
 
 Demo here:
-http://charlespockert.github.io/aurelia-grid/
+http://charlespockert.github.io/aurelia-bs-grid-demo/
 
 ## Using the grid
 
