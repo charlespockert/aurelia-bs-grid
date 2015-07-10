@@ -1,6 +1,6 @@
 # aurelia-bs-grid
 
-An Aurelia based data-grid control
+A lightweight Aurelia native data-grid control (no jQuery, no unnecessary dependencies)
 
 Demo here:
 http://charlespockert.github.io/aurelia-bs-grid-demo/
