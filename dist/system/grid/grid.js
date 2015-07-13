@@ -223,7 +223,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 				}, {
 					key: 'updatePager',
 					value: function updatePager() {
-						this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
+						if (this.pager) this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
 
 						this.firstVisibleItem = (this.pageNumber - 1) * Number(this.pageSize) + 1;
 						this.lastVisibleItem = this.pageNumber * Number(this.pageSize);
