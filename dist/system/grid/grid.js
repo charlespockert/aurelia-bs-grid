@@ -1,4 +1,4 @@
-System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'], function (_export) {
+System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', './aurelia-bs-grid.css!'], function (_export) {
 	'use strict';
 
 	var bindable, inject, skipContentProcessing, ObserverLocator, customElement, GridColumn, Compiler, Grid;
@@ -20,7 +20,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 			GridColumn = _gridColumn.GridColumn;
 		}, function (_gooyAureliaCompiler) {
 			Compiler = _gooyAureliaCompiler.Compiler;
-		}],
+		}, function (_aureliaBsGridCss) {}],
 		execute: function () {
 			Grid = (function () {
 				var _instanceInitializers = {};
@@ -48,6 +48,10 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 
 					_defineDecoratedPropertyDescriptor(this, 'showJumpButtons', _instanceInitializers);
 
+					_defineDecoratedPropertyDescriptor(this, 'pageSizes', _instanceInitializers);
+
+					this.firstVisibleItem = 0;
+					this.lastVisibleItem = 0;
 					this.pageNumber = 1;
 
 					_defineDecoratedPropertyDescriptor(this, 'serverSorting', _instanceInitializers);
@@ -216,6 +220,9 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 					key: 'updatePager',
 					value: function updatePager() {
 						this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
+
+						this.firstVisibleItem = (this.pageNumber - 1) * Number(this.pageSize) + 1;
+						this.lastVisibleItem = this.pageNumber * Number(this.pageSize);
 					}
 				}, {
 					key: 'fieldSorter',
@@ -236,6 +243,11 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 						};
 					}
 				}, {
+					key: 'pageSizesChanged',
+					value: function pageSizesChanged() {
+						this.refresh();
+					}
+				}, {
 					key: 'sortChanged',
 					value: function sortChanged(field) {
 						var newSort = undefined;
@@ -253,6 +265,8 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 						}
 
 						this.sorting[field] = newSort;
+
+						this.sortProcessingOrder.push(field);
 
 						this.refresh();
 					}
@@ -451,6 +465,13 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 					decorators: [bindable],
 					initializer: function initializer() {
 						return true;
+					},
+					enumerable: true
+				}, {
+					key: 'pageSizes',
+					decorators: [bindable],
+					initializer: function initializer() {
+						return [10, 25, 50];
 					},
 					enumerable: true
 				}, {

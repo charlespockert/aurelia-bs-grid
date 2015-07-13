@@ -1,6 +1,7 @@
 import {bindable, inject, skipContentProcessing, ObserverLocator, customElement } from 'aurelia-framework';
 import {GridColumn} from './grid-column';
 import {Compiler} from 'gooy/aurelia-compiler';
+import './aurelia-bs-grid.css!';
 
 @customElement('grid')
 @skipContentProcessing()
@@ -25,7 +26,12 @@ export class Grid {
 	
 	@bindable showFirstLastButtons = true;
 	@bindable showJumpButtons = true;
-	
+
+	@bindable pageSizes = [10, 25, 50];
+
+	firstVisibleItem = 0;
+	lastVisibleItem = 0;
+
 	pageNumber = 1;
 
 	
@@ -217,6 +223,9 @@ export class Grid {
 
 	updatePager() {
 		this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
+
+		this.firstVisibleItem = (this.pageNumber - 1) * Number(this.pageSize) + 1;
+		this.lastVisibleItem = (this.pageNumber) * Number(this.pageSize);
 	}
 
 	/* === Sorting === */
@@ -239,15 +248,9 @@ export class Grid {
 	    };
 	}
 
-	// sortByProperty(prop, dir) {
-	//    return (a,b) => {
-	//         if (typeof a[prop] == "number") {
-	//             return (a[prop] - b[prop]) * dir;
-	//         } else {
-	//             return ((a[prop] < b[prop]) ? -1 : ((a[prop] > b[prop]) ? 1 : 0)) * dir;
-	//         }
-	//     };
-	// }	
+	pageSizesChanged() {
+		this.refresh();
+	}
 
 	sortChanged(field) {
 
@@ -268,6 +271,9 @@ export class Grid {
 	    }
 
 	    this.sorting[field] = newSort;
+
+	    // TODO: Add sort processing order
+	    this.sortProcessingOrder.push(field); 
 
 	    // Apply the new sort
 		this.refresh();

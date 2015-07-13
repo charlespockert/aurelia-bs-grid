@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'], function (exports, _aureliaFramework, _gridColumn, _gooyAureliaCompiler) {
+define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler', './aurelia-bs-grid.css!'], function (exports, _aureliaFramework, _gridColumn, _gooyAureliaCompiler, _aureliaBsGridCss) {
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -37,6 +37,10 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 			_defineDecoratedPropertyDescriptor(this, 'showJumpButtons', _instanceInitializers);
 
+			_defineDecoratedPropertyDescriptor(this, 'pageSizes', _instanceInitializers);
+
+			this.firstVisibleItem = 0;
+			this.lastVisibleItem = 0;
 			this.pageNumber = 1;
 
 			_defineDecoratedPropertyDescriptor(this, 'serverSorting', _instanceInitializers);
@@ -205,6 +209,9 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			key: 'updatePager',
 			value: function updatePager() {
 				this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
+
+				this.firstVisibleItem = (this.pageNumber - 1) * Number(this.pageSize) + 1;
+				this.lastVisibleItem = this.pageNumber * Number(this.pageSize);
 			}
 		}, {
 			key: 'fieldSorter',
@@ -225,6 +232,11 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				};
 			}
 		}, {
+			key: 'pageSizesChanged',
+			value: function pageSizesChanged() {
+				this.refresh();
+			}
+		}, {
 			key: 'sortChanged',
 			value: function sortChanged(field) {
 				var newSort = undefined;
@@ -242,6 +254,8 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				}
 
 				this.sorting[field] = newSort;
+
+				this.sortProcessingOrder.push(field);
 
 				this.refresh();
 			}
@@ -440,6 +454,13 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			decorators: [_aureliaFramework.bindable],
 			initializer: function initializer() {
 				return true;
+			},
+			enumerable: true
+		}, {
+			key: 'pageSizes',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return [10, 25, 50];
 			},
 			enumerable: true
 		}, {
