@@ -9,6 +9,14 @@ export class Pager {
 	// Max num pages to show
 	@bindable numToShow = 5;
 
+	// Disable/enable
+	nextDisabled = false;
+	prevDisabled = false;
+
+	// Pager button options
+	@bindable showFirstLastButtons = true;
+	@bindable showJumpButtons = true;
+
 	// Total number of items in the dataset
 	page = 1;
 	pageCount = 0;
@@ -81,13 +89,38 @@ export class Pager {
 		};
 
 		this.pages = pages;
+
+		this.updateButtons();
+	}
+
+	updateButtons() {
+		this.nextDisabled = this.page === this.pageCount;		
+		this.prevDisabled = this.page === 1;
 	}
 
 	next() {
 		this.changePage(this.page + 1);
 	}
 
+	nextJump() {
+		this.changePage(this.page + this.numToShow);
+	}
+
 	prev() {
 		this.changePage(this.page - 1);
 	}
+
+	prevJump() {
+		this.changePage(this.page - this.numToShow);
+	}
+	
+	first() {
+		this.changePage(1);
+	}
+	
+	last() {
+		this.changePage(this.pageCount);
+	}
+
+	
 }

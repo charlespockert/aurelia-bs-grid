@@ -33,6 +33,10 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 			_defineDecoratedPropertyDescriptor(this, 'pagerSize', _instanceInitializers);
 
+			_defineDecoratedPropertyDescriptor(this, 'showFirstLastButtons', _instanceInitializers);
+
+			_defineDecoratedPropertyDescriptor(this, 'showJumpButtons', _instanceInitializers);
+
 			this.pageNumber = 1;
 
 			_defineDecoratedPropertyDescriptor(this, 'serverSorting', _instanceInitializers);
@@ -422,6 +426,20 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			decorators: [_aureliaFramework.bindable],
 			initializer: function initializer() {
 				return 10;
+			},
+			enumerable: true
+		}, {
+			key: 'showFirstLastButtons',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return true;
+			},
+			enumerable: true
+		}, {
+			key: 'showJumpButtons',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return true;
 			},
 			enumerable: true
 		}, {

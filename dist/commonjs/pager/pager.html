@@ -1,6 +1,20 @@
 <template>
     <ul class="pagination">
-        <li>
+        <li if.bind="showFirstLastButtons" class="${ prevDisabled ? 'disabled' : '' }">
+            <a href="" click.delegate="first()" aria-label="First">
+                <span aria-hidden="true">
+                    First
+                    </span>
+            </a>
+        </li>
+        <li if.bind="showJumpButtons" class="${ prevDisabled ? 'disabled' : '' }">
+            <a href="" click.delegate="prevJump()" aria-label="Next">
+                <span aria-hidden="true">
+                        &#8230;
+                    </span>
+            </a>
+        </li>
+        <li class="${ prevDisabled ? 'disabled' : '' }">
             <a href="" click.delegate="prev()" aria-label="Previous">
                 <span aria-hidden="true">
                         &laquo;
@@ -12,10 +26,24 @@
             <span style="display:none">${curPage}</span>
             <a href="" click.delegate="$parent.changePage(curPage)">${curPage}</a>
         </li>
-        <li>
+        <li class="${ nextDisabled ? 'disabled' : '' }">
             <a href="" click.delegate="next()" aria-label="Next">
                 <span aria-hidden="true">
                         &raquo;
+                    </span>
+            </a>
+        </li>
+        <li if.bind="showJumpButtons" class="${ nextDisabled ? 'disabled' : '' }">
+            <a href="" click.delegate="nextJump()" aria-label="Next">
+                <span aria-hidden="true">
+                        &#8230;
+                    </span>
+            </a>
+        </li>
+        <li if.bind="showFirstLastButtons" class="${ nextDisabled ? 'disabled' : '' }">
+            <a href="" click.delegate="last()" aria-label="Last">
+                <span aria-hidden="true">
+                    Last
                     </span>
             </a>
         </li>

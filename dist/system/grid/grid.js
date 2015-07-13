@@ -44,6 +44,10 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 
 					_defineDecoratedPropertyDescriptor(this, 'pagerSize', _instanceInitializers);
 
+					_defineDecoratedPropertyDescriptor(this, 'showFirstLastButtons', _instanceInitializers);
+
+					_defineDecoratedPropertyDescriptor(this, 'showJumpButtons', _instanceInitializers);
+
 					this.pageNumber = 1;
 
 					_defineDecoratedPropertyDescriptor(this, 'serverSorting', _instanceInitializers);
@@ -433,6 +437,20 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler'],
 					decorators: [bindable],
 					initializer: function initializer() {
 						return 10;
+					},
+					enumerable: true
+				}, {
+					key: 'showFirstLastButtons',
+					decorators: [bindable],
+					initializer: function initializer() {
+						return true;
+					},
+					enumerable: true
+				}, {
+					key: 'showJumpButtons',
+					decorators: [bindable],
+					initializer: function initializer() {
+						return true;
 					},
 					enumerable: true
 				}, {

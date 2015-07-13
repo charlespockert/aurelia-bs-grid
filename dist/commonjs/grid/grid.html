@@ -26,7 +26,7 @@
         </table>
         <div if.bind="pageable" class="text-center">
             <div show.bind="count > 0">
-                <pager num-to-show.bind="pagerSize" pager.ref="pager" on-page-changed.call="pageChanged($event)"></pager>
+                <pager num-to-show.bind="pagerSize" pager.ref="pager" on-page-changed.call="pageChanged($event)" show-first-last-buttons.bind="showFirstLastButtons" show-jump-buttons.bind="showJumpButtons"></pager>
             </div>
         </div>
         <!-- No rows message -->

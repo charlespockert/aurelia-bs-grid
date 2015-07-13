@@ -38,6 +38,10 @@ var Grid = (function () {
 
 		_defineDecoratedPropertyDescriptor(this, 'pagerSize', _instanceInitializers);
 
+		_defineDecoratedPropertyDescriptor(this, 'showFirstLastButtons', _instanceInitializers);
+
+		_defineDecoratedPropertyDescriptor(this, 'showJumpButtons', _instanceInitializers);
+
 		this.pageNumber = 1;
 
 		_defineDecoratedPropertyDescriptor(this, 'serverSorting', _instanceInitializers);
@@ -427,6 +431,20 @@ var Grid = (function () {
 		decorators: [_aureliaFramework.bindable],
 		initializer: function initializer() {
 			return 10;
+		},
+		enumerable: true
+	}, {
+		key: 'showFirstLastButtons',
+		decorators: [_aureliaFramework.bindable],
+		initializer: function initializer() {
+			return true;
+		},
+		enumerable: true
+	}, {
+		key: 'showJumpButtons',
+		decorators: [_aureliaFramework.bindable],
+		initializer: function initializer() {
+			return true;
 		},
 		enumerable: true
 	}, {

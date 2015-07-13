@@ -22,6 +22,13 @@ var Pager = (function () {
 
 		_defineDecoratedPropertyDescriptor(this, 'numToShow', _instanceInitializers);
 
+		this.nextDisabled = false;
+		this.prevDisabled = false;
+
+		_defineDecoratedPropertyDescriptor(this, 'showFirstLastButtons', _instanceInitializers);
+
+		_defineDecoratedPropertyDescriptor(this, 'showJumpButtons', _instanceInitializers);
+
 		this.page = 1;
 		this.pageCount = 0;
 		this.pages = [];
@@ -87,6 +94,14 @@ var Pager = (function () {
 			};
 
 			this.pages = pages;
+
+			this.updateButtons();
+		}
+	}, {
+		key: 'updateButtons',
+		value: function updateButtons() {
+			this.nextDisabled = this.page === this.pageCount;
+			this.prevDisabled = this.page === 1;
 		}
 	}, {
 		key: 'next',
@@ -94,9 +109,29 @@ var Pager = (function () {
 			this.changePage(this.page + 1);
 		}
 	}, {
+		key: 'nextJump',
+		value: function nextJump() {
+			this.changePage(this.page + this.numToShow);
+		}
+	}, {
 		key: 'prev',
 		value: function prev() {
 			this.changePage(this.page - 1);
+		}
+	}, {
+		key: 'prevJump',
+		value: function prevJump() {
+			this.changePage(this.page - this.numToShow);
+		}
+	}, {
+		key: 'first',
+		value: function first() {
+			this.changePage(1);
+		}
+	}, {
+		key: 'last',
+		value: function last() {
+			this.changePage(this.pageCount);
 		}
 	}, {
 		key: 'onPageChanged',
@@ -108,6 +143,20 @@ var Pager = (function () {
 		decorators: [_aureliaFramework.bindable],
 		initializer: function initializer() {
 			return 5;
+		},
+		enumerable: true
+	}, {
+		key: 'showFirstLastButtons',
+		decorators: [_aureliaFramework.bindable],
+		initializer: function initializer() {
+			return true;
+		},
+		enumerable: true
+	}, {
+		key: 'showJumpButtons',
+		decorators: [_aureliaFramework.bindable],
+		initializer: function initializer() {
+			return true;
 		},
 		enumerable: true
 	}], null, _instanceInitializers);

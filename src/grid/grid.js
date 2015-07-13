@@ -22,7 +22,12 @@ export class Grid {
 	@bindable pageSize = 10;
 	@bindable page = 1;
 	@bindable pagerSize = 10;
+	
+	@bindable showFirstLastButtons = true;
+	@bindable showJumpButtons = true;
+	
 	pageNumber = 1;
+
 	
 	// Sortination
 	@bindable serverSorting = false;
