@@ -17,6 +17,8 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		function Grid(element, compiler, observerLocator) {
 			_classCallCheck(this, _Grid);
 
+			_defineDecoratedPropertyDescriptor(this, 'gridHeight', _instanceInitializers);
+
 			_defineDecoratedPropertyDescriptor(this, 'initialLoad', _instanceInitializers);
 
 			_defineDecoratedPropertyDescriptor(this, 'showColumnFilters', _instanceInitializers);
@@ -116,6 +118,8 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		}, {
 			key: 'attached',
 			value: function attached() {
+				this.gridHeightChanged();
+
 				if (this.autoLoad) this.refresh();
 			}
 		}, {
@@ -127,7 +131,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				if (this.serverPaging && !this.serverSorting) this.sortable = false;
 
 				var table = this.element.querySelector('table>tbody');
-				var rowTemplate = Array.prototype.slice.call(table.querySelectorAll('tr'))[1];
+				var rowTemplate = table.querySelector('tr');
 
 				var fragment = document.createDocumentFragment();
 
@@ -254,8 +258,6 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				}
 
 				this.sorting[field] = newSort;
-
-				this.sortProcessingOrder.push(field);
 
 				this.refresh();
 			}
@@ -386,6 +388,25 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			value: function noRowsMessageChanged() {
 				this.showNoRowsMessage = this.noRowsMessage !== '';
 			}
+		}, {
+			key: 'gridHeightChanged',
+			value: function gridHeightChanged() {
+
+				var cont = this.element.querySelector('.grid-content-container');
+
+				if (this.gridHeight > 0) {
+					cont.setAttribute('style', 'height:' + this.gridHeight + 'px');
+				} else {
+					cont.removeAttribute('style');
+				}
+			}
+		}, {
+			key: 'gridHeight',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return 0;
+			},
+			enumerable: true
 		}, {
 			key: 'initialLoad',
 			decorators: [_aureliaFramework.bindable],

@@ -8,6 +8,9 @@ import './aurelia-bs-grid.css!';
 @inject(Element, Compiler, ObserverLocator)
 export class Grid {
 
+	/* == Styling == */
+	@bindable gridHeight = 0;
+
 	/* == Options == */
 
 	// Initial load flag (for client side)
@@ -106,6 +109,8 @@ export class Grid {
 
 	/* === Lifecycle === */
 	attached() {
+		this.gridHeightChanged();
+
 		if(this.autoLoad)
 		    this.refresh();
 	}
@@ -122,7 +127,7 @@ export class Grid {
 		// Build the rows then dynamically compile the table
 		// Get the table...
 		var table = this.element.querySelector("table>tbody");
-		var rowTemplate = Array.prototype.slice.call(table.querySelectorAll("tr"))[1];
+		var rowTemplate = table.querySelector("tr");
 
 		// Create a fragment we will manipulate the DOM in
 		var fragment = document.createDocumentFragment();
@@ -273,7 +278,7 @@ export class Grid {
 	    this.sorting[field] = newSort;
 
 	    // TODO: Add sort processing order
-	    this.sortProcessingOrder.push(field); 
+	    // this.sortProcessingOrder.push(field); 
 
 	    // Apply the new sort
 		this.refresh();
@@ -424,7 +429,16 @@ export class Grid {
 		this.showNoRowsMessage = this.noRowsMessage !== "";
 	}
 
+	gridHeightChanged() {
 
+		var cont = this.element.querySelector(".grid-content-container");
+		
+		if(this.gridHeight > 0) {
+			cont.setAttribute("style", "height:" + this.gridHeight + "px");
+		} else {
+			cont.removeAttribute("style");
+		}
+	}
 
 }
 
