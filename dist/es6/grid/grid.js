@@ -72,6 +72,9 @@ export class Grid {
 	data = [];
 	count = 0;
 
+	// Subscription handling
+	unbinding = false;
+
 	constructor(element, compiler, observerLocator) {
 		this.element = element;
 		this.compiler = compiler;
@@ -169,6 +172,11 @@ export class Grid {
 
 		// HACK: why is the change handler not firing for noRowsMessage?
 		this.noRowsMessageChanged();
+	}
+
+	unbind() {
+		unbinding = true;
+		this.dontWatchForChanges();
 	}
 
 	/* === Column handling === */
@@ -405,12 +413,14 @@ export class Grid {
 
 		this.dontWatchForChanges();
 
-	    // We can update the pager automagically
-	    this.subscription = this.observerLocator
-	        .getArrayObserver(this.cache)
-	        .subscribe((splices) => {			
-				this.refresh();
-	        });
+		// Guard against data refresh events hitting after the user does anything that unloads the grid
+		if(!unbinding)
+		    // We can update the pager automagically
+		    this.subscription = this.observerLocator
+		        .getArrayObserver(this.cache)
+		        .subscribe((splices) => {			
+					this.refresh();
+		        });
 	}
 
 	dontWatchForChanges() {

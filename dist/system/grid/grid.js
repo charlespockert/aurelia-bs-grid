@@ -87,6 +87,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 					this.cache = [];
 					this.data = [];
 					this.count = 0;
+					this.unbinding = false;
 
 					this.element = element;
 					this.compiler = compiler;
@@ -173,6 +174,12 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 						this.compiler.compile(table, this, undefined, fragment);
 
 						this.noRowsMessageChanged();
+					}
+				}, {
+					key: 'unbind',
+					value: function unbind() {
+						unbinding = true;
+						this.dontWatchForChanges();
 					}
 				}, {
 					key: 'addColumn',
@@ -380,9 +387,9 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 
 						this.dontWatchForChanges();
 
-						this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
-							_this4.refresh();
-						});
+						if (!unbinding) this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
+								_this4.refresh();
+							});
 					}
 				}, {
 					key: 'dontWatchForChanges',
