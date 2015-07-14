@@ -175,7 +175,7 @@ export class Grid {
 	}
 
 	unbind() {
-		unbinding = true;
+		this.unbinding = true;
 		this.dontWatchForChanges();
 	}
 
@@ -414,7 +414,7 @@ export class Grid {
 		this.dontWatchForChanges();
 
 		// Guard against data refresh events hitting after the user does anything that unloads the grid
-		if(!unbinding)
+		if(!this.unbinding)
 		    // We can update the pager automagically
 		    this.subscription = this.observerLocator
 		        .getArrayObserver(this.cache)
