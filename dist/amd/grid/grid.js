@@ -167,7 +167,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		}, {
 			key: 'unbind',
 			value: function unbind() {
-				unbinding = true;
+				this.unbinding = true;
 				this.dontWatchForChanges();
 			}
 		}, {
@@ -376,7 +376,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 				this.dontWatchForChanges();
 
-				if (!unbinding) this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
+				if (!this.unbinding) this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
 						_this4.refresh();
 					});
 			}

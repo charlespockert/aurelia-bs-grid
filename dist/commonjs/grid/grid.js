@@ -174,7 +174,7 @@ var Grid = (function () {
 	}, {
 		key: 'unbind',
 		value: function unbind() {
-			unbinding = true;
+			this.unbinding = true;
 			this.dontWatchForChanges();
 		}
 	}, {
@@ -383,7 +383,7 @@ var Grid = (function () {
 
 			this.dontWatchForChanges();
 
-			if (!unbinding) this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
+			if (!this.unbinding) this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
 					_this4.refresh();
 				});
 		}

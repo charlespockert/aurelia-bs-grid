@@ -1,0 +1,74 @@
+/* Pager styles */
+grid pager .pagination {
+    margin: 0;
+}
+
+grid pager {
+    height: 34px;
+}
+
+/* Grid styles */
+grid .grid-container {
+    position: relative;
+}
+
+
+grid .grid-sort-arrow {
+    fill: gainsboro;
+    stroke: gray;
+    stroke-width: 1;
+}
+
+grid .grid-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    min-width: 100%;
+    min-height: 100%;
+    height: 100%;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+grid .grid-progress-indicator {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 11;
+    transform: translate(-50%, -50%);
+    width: 10%;
+}
+
+grid .grid-summary {
+	text-align: right;
+}
+
+grid .table {
+    margin-bottom: 0;
+}
+
+grid .grid-container {
+    border: 1px solid gainsboro;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+grid .grid-content-container {
+    overflow: auto;
+    width: 100%;
+}
+
+grid .grid-content-container tr:first-child td {
+    border-top: 0;
+}
+
+grid .grid-footer-container {
+    border-top: 1px solid gainsboro;
+    padding: 8px;
+    overflow: auto;
+}
+
+grid .grid-footer-container>span {
+    line-height: 34px;
+    float: right;
+}
