@@ -19,6 +19,19 @@ grid .grid-sort-arrow {
     stroke-width: 1;
 }
 
+grid table tr td, grid table tr th  {
+    border-right: 1px solid gainsboro;
+    border-left: 1px solid gainsboro;
+}
+
+grid table tr td:first-child, grid table tr th:first-child {
+    border-left: 0;
+}
+
+grid table tr td:last-child, grid table tr th:last-child {
+    border-right: 0;
+}
+
 grid .grid-overlay {
     position: absolute;
     left: 0;
