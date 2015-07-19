@@ -56,6 +56,7 @@ var Grid = (function () {
 
 		_defineDecoratedPropertyDescriptor(this, 'sortable', _instanceInitializers);
 
+		this.sortProcessingOrder = [];
 		this.sorting = {};
 		this.Trogdor = true;
 
@@ -273,6 +274,12 @@ var Grid = (function () {
 
 			this.sorting[field] = newSort;
 
+			var pos = this.sortProcessingOrder.indexOf(field);
+
+			if (pos > -1) this.sortProcessingOrder.splice(pos, 1);
+
+			this.sortProcessingOrder.push(field);
+
 			this.refresh();
 		}
 	}, {
@@ -280,9 +287,13 @@ var Grid = (function () {
 		value: function applySort(data) {
 			var fields = [];
 
-			for (var prop in this.sorting) {
-				if (this.sorting[prop] !== '') fields.push(this.sorting[prop] === 'asc' ? prop : '-' + prop);
-			}
+			for (var i = 0; i < this.sortProcessingOrder.length; i++) {
+				var sort = this.sortProcessingOrder[i];
+
+				for (var prop in this.sorting) {
+					if (sort == prop && this.sorting[prop] !== '') fields.push(this.sorting[prop] === 'asc' ? prop : '-' + prop);
+				}
+			};
 
 			data = data.sort(this.fieldSorter(fields));
 

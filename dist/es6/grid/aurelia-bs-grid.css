@@ -1,4 +1,5 @@
 /* Pager styles */
+
 grid pager .pagination {
     margin: 0;
 }
@@ -7,11 +8,12 @@ grid pager {
     height: 34px;
 }
 
+
 /* Grid styles */
+
 grid .grid-container {
     position: relative;
 }
-
 
 grid .grid-sort-arrow {
     fill: gainsboro;
@@ -19,16 +21,19 @@ grid .grid-sort-arrow {
     stroke-width: 1;
 }
 
-grid table tr td, grid table tr th  {
+grid table tr td,
+grid table tr th {
     border-right: 1px solid gainsboro;
     border-left: 1px solid gainsboro;
 }
 
-grid table tr td:first-child, grid table tr th:first-child {
+grid table tr td:first-child,
+grid table tr th:first-child {
     border-left: 0;
 }
 
-grid table tr td:last-child, grid table tr th:last-child {
+grid table tr td:last-child,
+grid table tr th:last-child {
     border-right: 0;
 }
 
@@ -53,7 +58,7 @@ grid .grid-progress-indicator {
 }
 
 grid .grid-summary {
-	text-align: right;
+    text-align: right;
 }
 
 grid .table {
@@ -81,7 +86,20 @@ grid .grid-footer-container {
     overflow: auto;
 }
 
+grid .grid-footer-container>pager {
+    float: left;
+}
+
+grid .grid-footer-container>div {
+    float: left;
+    margin-left: 20px;
+}
+
 grid .grid-footer-container>span {
     line-height: 34px;
     float: right;
+}
+
+grid .progress-bar {
+    width: 100%;
 }

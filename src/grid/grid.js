@@ -41,6 +41,7 @@ export class Grid {
 	// Sortination
 	@bindable serverSorting = false;
 	@bindable sortable = true;
+	sortProcessingOrder = []; // Represents which order to apply sorts to each column
 	sorting = {};
 
 	// Burnination?
@@ -286,8 +287,13 @@ export class Grid {
 
 	    this.sorting[field] = newSort;
 
-	    // TODO: Add sort processing order
-	    // this.sortProcessingOrder.push(field); 
+	    // If the sort is present in the sort stack, slice it to the back of the stack, otherwise just add it
+	    var pos = this.sortProcessingOrder.indexOf(field);
+
+	    if(pos > -1)
+	    	this.sortProcessingOrder.splice(pos, 1);	    
+
+		this.sortProcessingOrder.push(field); 
 
 	    // Apply the new sort
 		this.refresh();
@@ -298,10 +304,16 @@ export class Grid {
 		// Format the sort fields
 		var fields = [];
 
-		for(var prop in this.sorting) {
-			if(this.sorting[prop] !== "")
-				fields.push(this.sorting[prop] === "asc" ? (prop) : ("-" + prop));
-		}
+		// Get the fields in the "sortingORder"
+		for (var i = 0; i < this.sortProcessingOrder.length; i++) {
+			var sort = this.sortProcessingOrder[i];
+
+			for(var prop in this.sorting) {
+				if(sort == prop && this.sorting[prop] !== "")
+					fields.push(this.sorting[prop] === "asc" ? (prop) : ("-" + prop));
+			}
+		};
+
 
 		// If server sort, just refresh
 		data = data.sort(this.fieldSorter(fields));
