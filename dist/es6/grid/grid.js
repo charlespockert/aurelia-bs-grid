@@ -76,6 +76,10 @@ export class Grid {
 	// Subscription handling
 	unbinding = false;
 
+	// Visual
+	// TODO: calc scrollbar width using browser
+	scrollBarWidth = 16;
+
 	constructor(element, compiler, observerLocator) {
 		this.element = element;
 		this.compiler = compiler;
@@ -225,6 +229,8 @@ export class Grid {
 		this.updatePager();
 
 		this.watchForChanges();
+
+		setTimeout(this.syncColumnHeadersWithColumns.bind(this), 0);
 	}
 
 	applyPage(data) {
@@ -454,6 +460,7 @@ export class Grid {
 
 	gridHeightChanged() {
 
+		// TODO: Make this a one off
 		var cont = this.element.querySelector(".grid-content-container");
 		
 		if(this.gridHeight > 0) {
@@ -463,5 +470,32 @@ export class Grid {
 		}
 	}
 
+	/* === Visual === */
+	syncColumnHeadersWithColumns() {
+		// Get the header row
+		var headers = this.element.querySelectorAll("table>thead>tr:first-child>th");
+		var filters = this.element.querySelectorAll("table>thead>tr:last-child>th");
+
+		// Get the first row from the data if there is one...
+		var cells = this.element.querySelectorAll("table>tbody>tr:first-child>td");
+
+		for (var i = headers.length - 1; i >= 0; i--) {
+			var header = headers[i];
+			var filter = filters[i];
+			var cell = cells[i];
+			var overflow = this.isBodyOverflowing();
+
+			var tgtWidth = cell.offsetWidth + (i == headers.length - 1 && overflow ? this.scrollBarWidth : 0);
+		
+			// Make the header the same width as the cell...
+			header.setAttribute("style", "width: " + tgtWidth + "px");
+			filter.setAttribute("style", "width: " + tgtWidth + "px");
+		};
+	}
+
+	isBodyOverflowing() {
+		var body = this.element.querySelector(".grid-content-container");
+		return body.offsetHeight < body.scrollHeight || body.offsetWidth < body.scrollWidth;
+	}
 }
 

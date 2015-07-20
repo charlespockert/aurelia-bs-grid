@@ -89,6 +89,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 					this.data = [];
 					this.count = 0;
 					this.unbinding = false;
+					this.scrollBarWidth = 16;
 
 					this.element = element;
 					this.compiler = compiler;
@@ -219,6 +220,8 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 						this.updatePager();
 
 						this.watchForChanges();
+
+						setTimeout(this.syncColumnHeadersWithColumns.bind(this), 0);
 					}
 				}, {
 					key: 'applyPage',
@@ -420,7 +423,6 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 				}, {
 					key: 'gridHeightChanged',
 					value: function gridHeightChanged() {
-
 						var cont = this.element.querySelector('.grid-content-container');
 
 						if (this.gridHeight > 0) {
@@ -428,6 +430,32 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 						} else {
 							cont.removeAttribute('style');
 						}
+					}
+				}, {
+					key: 'syncColumnHeadersWithColumns',
+					value: function syncColumnHeadersWithColumns() {
+						var headers = this.element.querySelectorAll('table>thead>tr:first-child>th');
+						var filters = this.element.querySelectorAll('table>thead>tr:last-child>th');
+
+						var cells = this.element.querySelectorAll('table>tbody>tr:first-child>td');
+
+						for (var i = headers.length - 1; i >= 0; i--) {
+							var header = headers[i];
+							var filter = filters[i];
+							var cell = cells[i];
+							var overflow = this.isBodyOverflowing();
+
+							var tgtWidth = cell.offsetWidth + (i == headers.length - 1 && overflow ? this.scrollBarWidth : 0);
+
+							header.setAttribute('style', 'width: ' + tgtWidth + 'px');
+							filter.setAttribute('style', 'width: ' + tgtWidth + 'px');
+						};
+					}
+				}, {
+					key: 'isBodyOverflowing',
+					value: function isBodyOverflowing() {
+						var body = this.element.querySelector('.grid-content-container');
+						return body.offsetHeight < body.scrollHeight || body.offsetWidth < body.scrollWidth;
 					}
 				}, {
 					key: 'gridHeight',
