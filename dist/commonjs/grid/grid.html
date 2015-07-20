@@ -3,7 +3,7 @@
     <div>
         <div class="grid-container" show.bind="!showNoRowsMessage || (showNoRowsMessage && count > 0)">
             <!-- Header table -->
-            <table class="table table-hover table-striped table-responsive grid-header-table">
+<!--             <table class="table table-hover table-striped table-responsive grid-header-table">
                 <thead>
                     <tr if.bind="showColumnFilters">
                         <th repeat.for="$column of columns" class="${ $column.class !== '' ? $column.class : '' }">
@@ -24,9 +24,28 @@
                     </tr>
                 </thead>
             </table>
-            <!-- Content table -->
+ -->            <!-- Content table -->
             <div class="grid-content-container">
                 <table class="table table-hover table-striped table-responsive selectable" show.bind="!showNoRowsMessage || (showNoRowsMessage && count > 0)">
+                <thead>
+                    <tr if.bind="showColumnFilters">
+                        <th repeat.for="$column of columns" class="${ $column.class !== '' ? $column.class : '' }">
+                            <input if.bind="$column.showFilter" class="form-control" value.bind="$column.filterValue" input.delegate="$parent.updateFilters()"></input>
+                        </th>
+                    </tr>
+                    <tr role="button">
+                        <th repeat.for="$column of columns" class="${ $column.class !== '' ? $column.class : '' }">
+                            <a if.bind="$column.nosort == false && $parent.sortable" click.trigger="$parent.sortChanged($column.field)">${ $column.heading }</a>
+                            <span if.bind="$column.nosort == true || !$parent.sortable">${ $column.heading }</span>
+                            <svg if.bind="$parent.sorting[$column.field] === 'desc'" height="8" width="10">
+                                <polygon class="grid-sort-arrow" points="0,0 8,0 4,8" />
+                            </svg>
+                            <svg if.bind="$parent.sorting[$column.field] === 'asc'" height="8" width="10">
+                                <polygon class="grid-sort-arrow" points="0,8 8,8 4,0" />
+                            </svg>
+                        </th>
+                    </tr>
+                </thead>
                     <tbody>
                         <tr role="button" click.delegate="$parent.select($item)">
                         </tr>
