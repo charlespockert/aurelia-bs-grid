@@ -156,7 +156,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 
 						for (var prop in this.rowAttrs) {
 							if (this.rowAttrs.hasOwnProperty(prop)) {
-								rowTemplate.setAttribute(prop, this.rowTemplate[prop]);
+								rowTemplate.setAttribute(prop, this.rowAttrs[prop]);
 							}
 						}
 

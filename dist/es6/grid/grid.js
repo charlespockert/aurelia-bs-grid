@@ -150,7 +150,7 @@ export class Grid {
 		// Copy any user specified row attributes to the row template
 		for (var prop in this.rowAttrs) {
     		if (this.rowAttrs.hasOwnProperty(prop)) {
-				rowTemplate.setAttribute(prop, this.rowTemplate[prop]);
+				rowTemplate.setAttribute(prop, this.rowAttrs[prop]);
         	}
 		}	
 
