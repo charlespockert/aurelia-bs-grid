@@ -439,12 +439,14 @@ var Grid = (function () {
 				var header = headers[i];
 				var filter = filters[i];
 				var cell = cells[i];
-				var overflow = this.isBodyOverflowing();
 
-				var tgtWidth = cell.offsetWidth + (i == headers.length - 1 && overflow ? this.scrollBarWidth : 0);
+				if (cell && header && filter) {
+					var overflow = this.isBodyOverflowing();
+					var tgtWidth = cell.offsetWidth + (i == headers.length - 1 && overflow ? this.scrollBarWidth : 0);
 
-				header.setAttribute('style', 'width: ' + tgtWidth + 'px');
-				filter.setAttribute('style', 'width: ' + tgtWidth + 'px');
+					header.setAttribute('style', 'width: ' + tgtWidth + 'px');
+					filter.setAttribute('style', 'width: ' + tgtWidth + 'px');
+				}
 			};
 		}
 	}, {

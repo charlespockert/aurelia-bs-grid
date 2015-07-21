@@ -483,13 +483,15 @@ export class Grid {
 			var header = headers[i];
 			var filter = filters[i];
 			var cell = cells[i];
-			var overflow = this.isBodyOverflowing();
 
-			var tgtWidth = cell.offsetWidth + (i == headers.length - 1 && overflow ? this.scrollBarWidth : 0);
-		
-			// Make the header the same width as the cell...
-			header.setAttribute("style", "width: " + tgtWidth + "px");
-			filter.setAttribute("style", "width: " + tgtWidth + "px");
+			if(cell && header && filter) {
+				var overflow = this.isBodyOverflowing();
+				var tgtWidth = cell.offsetWidth + (i == headers.length - 1 && overflow ? this.scrollBarWidth : 0);
+			
+				// Make the header the same width as the cell...
+				header.setAttribute("style", "width: " + tgtWidth + "px");
+				filter.setAttribute("style", "width: " + tgtWidth + "px");
+			}
 		};
 	}
 
