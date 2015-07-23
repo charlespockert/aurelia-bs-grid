@@ -81,7 +81,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			this.cache = [];
 			this.data = [];
 			this.count = 0;
-			this.attached = false;
+			this.gridAttached = false;
 			this.unbinding = false;
 			this.scrollBarWidth = 16;
 
@@ -128,7 +128,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			value: function attached() {
 				this.gridHeightChanged();
 
-				this.attached = true;
+				this.gridAttached = true;
 
 				if (this.autoLoad) this.refresh();
 			}
@@ -342,7 +342,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		}, {
 			key: 'refresh',
 			value: function refresh() {
-				if (!this.attached) return;
+				if (!this.gridAttached) return;
 
 				this.dontWatchForChanges();
 

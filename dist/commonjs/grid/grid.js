@@ -88,7 +88,7 @@ var Grid = (function () {
 		this.cache = [];
 		this.data = [];
 		this.count = 0;
-		this.attached = false;
+		this.gridAttached = false;
 		this.unbinding = false;
 		this.scrollBarWidth = 16;
 
@@ -135,7 +135,7 @@ var Grid = (function () {
 		value: function attached() {
 			this.gridHeightChanged();
 
-			this.attached = true;
+			this.gridAttached = true;
 
 			if (this.autoLoad) this.refresh();
 		}
@@ -349,7 +349,7 @@ var Grid = (function () {
 	}, {
 		key: 'refresh',
 		value: function refresh() {
-			if (!this.attached) return;
+			if (!this.gridAttached) return;
 
 			this.dontWatchForChanges();
 
