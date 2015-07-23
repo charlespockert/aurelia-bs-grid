@@ -74,7 +74,6 @@ export class Grid {
 	cache = [];
 	data = [];
 	count = 0;
-	gridAttached = false;
 
 	// Subscription handling
 	unbinding = false;
@@ -121,8 +120,6 @@ export class Grid {
 	/* === Lifecycle === */
 	attached() {
 		this.gridHeightChanged();
-
-		this.gridAttached = true;
 
 		if(this.autoLoad)
 		    this.refresh();
@@ -200,7 +197,10 @@ export class Grid {
 	}
 
 	/* === Paging === */
-	pageChanged(page) {
+	pageChanged(page, oldValue) {
+
+		if(page === oldValue) return;
+		
 		this.pageNumber = Number(page);
 		this.refresh();
 	}
@@ -369,9 +369,6 @@ export class Grid {
 
 	/* === Data === */
 	refresh() {
-
-		// Don't refresh until attached....
-		if(!this.gridAttached) return;
 
 		// If we have any server side stuff we need to get the data first
 		this.dontWatchForChanges();

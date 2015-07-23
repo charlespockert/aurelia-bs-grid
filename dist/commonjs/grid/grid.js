@@ -88,7 +88,6 @@ var Grid = (function () {
 		this.cache = [];
 		this.data = [];
 		this.count = 0;
-		this.gridAttached = false;
 		this.unbinding = false;
 		this.scrollBarWidth = 16;
 
@@ -134,8 +133,6 @@ var Grid = (function () {
 		key: 'attached',
 		value: function attached() {
 			this.gridHeightChanged();
-
-			this.gridAttached = true;
 
 			if (this.autoLoad) this.refresh();
 		}
@@ -195,7 +192,10 @@ var Grid = (function () {
 		}
 	}, {
 		key: 'pageChanged',
-		value: function pageChanged(page) {
+		value: function pageChanged(page, oldValue) {
+
+			if (page === oldValue) return;
+
 			this.pageNumber = Number(page);
 			this.refresh();
 		}
@@ -349,8 +349,6 @@ var Grid = (function () {
 	}, {
 		key: 'refresh',
 		value: function refresh() {
-			if (!this.gridAttached) return;
-
 			this.dontWatchForChanges();
 
 			if (this.serverPaging || this.serverSorting || this.serverFiltering || !this.initialLoad) this.getData();else this.filterSortPage(this.cache);
