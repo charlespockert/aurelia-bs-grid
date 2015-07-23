@@ -92,6 +92,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 					this.cache = [];
 					this.data = [];
 					this.count = 0;
+					this.attached = false;
 					this.unbinding = false;
 					this.scrollBarWidth = 16;
 
@@ -137,6 +138,8 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 					key: 'attached',
 					value: function attached() {
 						this.gridHeightChanged();
+
+						this.attached = true;
 
 						if (this.autoLoad) this.refresh();
 					}
@@ -350,6 +353,8 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 				}, {
 					key: 'refresh',
 					value: function refresh() {
+						if (!this.attached) return;
+
 						this.dontWatchForChanges();
 
 						if (this.serverPaging || this.serverSorting || this.serverFiltering || !this.initialLoad) this.getData();else this.filterSortPage(this.cache);

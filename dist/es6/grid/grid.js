@@ -74,6 +74,7 @@ export class Grid {
 	cache = [];
 	data = [];
 	count = 0;
+	attached = false;
 
 	// Subscription handling
 	unbinding = false;
@@ -120,6 +121,8 @@ export class Grid {
 	/* === Lifecycle === */
 	attached() {
 		this.gridHeightChanged();
+
+		this.attached = true;
 
 		if(this.autoLoad)
 		    this.refresh();
@@ -366,6 +369,10 @@ export class Grid {
 
 	/* === Data === */
 	refresh() {
+
+		// Don't refresh until attached....
+		if(!this.attached) return;
+
 		// If we have any server side stuff we need to get the data first
 		this.dontWatchForChanges();
 
