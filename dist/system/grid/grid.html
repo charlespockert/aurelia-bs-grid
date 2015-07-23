@@ -35,8 +35,8 @@
             </div>
             <!-- Footer div -->
             <div class="grid-footer-container">
-                <pager num-to-show.bind="pagerSize" pager.ref="pager" on-page-changed.call="pageChanged($event)" show-first-last-buttons.bind="showFirstLastButtons" show-jump-buttons.bind="showJumpButtons"></pager>
-                <div class="form-inline">
+                <pager if.bind="pageable" num-to-show.bind="pagerSize" pager.ref="pager" on-page-changed.call="pageChanged($event)" show-first-last-buttons.bind="showFirstLastButtons" show-jump-buttons.bind="showJumpButtons"></pager>
+                <div class="form-inline" if.bind="showPageSizeBox">
                     <div class="form-control-group">
                         <select class="form-control" value.bind="pageSize">
                             <option value.bind="size" repeat.for="size of pageSizes">${ size === '*' ? 'All' : size }</option>
@@ -44,7 +44,7 @@
                         <span> items per page</span>
                     </div>
                 </div>
-                <span class="grid-summary">Showing ${ firstVisibleItem } - ${ lastVisibleItem } of ${ count } items</span>
+                <span class="grid-summary" if.bind="showPagingSummary">Showing ${ firstVisibleItem } - ${ lastVisibleItem } of ${ count } items</span>
             </div>
         </div>
         <!-- No rows message -->

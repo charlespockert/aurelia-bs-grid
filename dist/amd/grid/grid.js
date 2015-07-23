@@ -35,6 +35,10 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 
 			_defineDecoratedPropertyDescriptor(this, 'pagerSize', _instanceInitializers);
 
+			_defineDecoratedPropertyDescriptor(this, 'showPageSizeBox', _instanceInitializers);
+
+			_defineDecoratedPropertyDescriptor(this, 'showPagingSummary', _instanceInitializers);
+
 			_defineDecoratedPropertyDescriptor(this, 'showFirstLastButtons', _instanceInitializers);
 
 			_defineDecoratedPropertyDescriptor(this, 'showJumpButtons', _instanceInitializers);
@@ -317,14 +321,12 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		}, {
 			key: 'getFilterColumns',
 			value: function getFilterColumns() {
-				var cols = [];
+				var cols = {};
 
 				for (var i = this.columns.length - 1; i >= 0; i--) {
 					var col = this.columns[i];
 
-					if (col.filterValue !== '') {
-						cols.push({ field: col.field, value: col.filterValue });
-					}
+					if (col.filterValue !== '') cols[col.field] = col.filterValue;
 				}
 
 				return cols;
@@ -509,6 +511,20 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			decorators: [_aureliaFramework.bindable],
 			initializer: function initializer() {
 				return 10;
+			},
+			enumerable: true
+		}, {
+			key: 'showPageSizeBox',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return true;
+			},
+			enumerable: true
+		}, {
+			key: 'showPagingSummary',
+			decorators: [_aureliaFramework.bindable],
+			initializer: function initializer() {
+				return true;
 			},
 			enumerable: true
 		}, {

@@ -27,6 +27,8 @@ export class Grid {
 	@bindable page = 1;
 	@bindable pagerSize = 10;
 	
+	@bindable showPageSizeBox = true;
+	@bindable showPagingSummary = true;
 	@bindable showFirstLastButtons = true;
 	@bindable showJumpButtons = true;
 
@@ -345,18 +347,18 @@ export class Grid {
 	}
 
 	getFilterColumns() {
-		var cols = [];
+		var cols = {};
 
 		for (var i = this.columns.length - 1; i >= 0; i--) {
 			var col = this.columns[i];
 
-			if(col.filterValue !== "") {
-				cols.push({ field: col.field, value: col.filterValue });
-			}
+			if(col.filterValue !== "")
+				cols[col.field] = col.filterValue;
 		}		
 
 		return cols;
 	}
+
 
 	updateFilters() {
 		this.refresh();
