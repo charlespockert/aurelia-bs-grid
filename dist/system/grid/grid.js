@@ -70,6 +70,8 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 
 					_defineDecoratedPropertyDescriptor(this, 'autoGenerateColumns', _instanceInitializers);
 
+					_defineDecoratedPropertyDescriptor(this, 'showColumnHeaders', _instanceInitializers);
+
 					this.columnHeaders = [];
 					this.columns = [];
 
@@ -205,8 +207,10 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 					}
 				}, {
 					key: 'pageSizeChanged',
-					value: function pageSizeChanged() {
-						this.pageChanged(1);
+					value: function pageSizeChanged(newValue, oldValue) {
+
+						if (newValue === oldValue) return;
+
 						this.updatePager();
 					}
 				}, {
@@ -580,6 +584,13 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 					key: 'autoGenerateColumns',
 					decorators: [bindable],
 					initializer: null,
+					enumerable: true
+				}, {
+					key: 'showColumnHeaders',
+					decorators: [bindable],
+					initializer: function initializer() {
+						return true;
+					},
 					enumerable: true
 				}, {
 					key: 'selectable',

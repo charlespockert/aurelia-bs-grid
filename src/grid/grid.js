@@ -51,6 +51,7 @@ export class Grid {
 
 	// Column defs
 	@bindable autoGenerateColumns;	
+	@bindable showColumnHeaders = true;
 	columnHeaders = [];
 	columns = [];
 	
@@ -200,13 +201,16 @@ export class Grid {
 	pageChanged(page, oldValue) {
 
 		if(page === oldValue) return;
-		
+
 		this.pageNumber = Number(page);
 		this.refresh();
 	}
 
-	pageSizeChanged() {
-		this.pageChanged(1);
+	pageSizeChanged(newValue, oldValue) {
+
+		if(newValue === oldValue) return;
+
+		//this.pageChanged(1);
 		this.updatePager();
 	}
 

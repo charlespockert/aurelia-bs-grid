@@ -66,6 +66,8 @@ var Grid = (function () {
 
 		_defineDecoratedPropertyDescriptor(this, 'autoGenerateColumns', _instanceInitializers);
 
+		_defineDecoratedPropertyDescriptor(this, 'showColumnHeaders', _instanceInitializers);
+
 		this.columnHeaders = [];
 		this.columns = [];
 
@@ -201,8 +203,10 @@ var Grid = (function () {
 		}
 	}, {
 		key: 'pageSizeChanged',
-		value: function pageSizeChanged() {
-			this.pageChanged(1);
+		value: function pageSizeChanged(newValue, oldValue) {
+
+			if (newValue === oldValue) return;
+
 			this.updatePager();
 		}
 	}, {
@@ -576,6 +580,13 @@ var Grid = (function () {
 		key: 'autoGenerateColumns',
 		decorators: [_aureliaFramework.bindable],
 		initializer: null,
+		enumerable: true
+	}, {
+		key: 'showColumnHeaders',
+		decorators: [_aureliaFramework.bindable],
+		initializer: function initializer() {
+			return true;
+		},
 		enumerable: true
 	}, {
 		key: 'selectable',

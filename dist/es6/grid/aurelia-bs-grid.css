@@ -76,6 +76,10 @@ grid .grid-content-container {
     width: 100%;
 }
 
+grid .grid-content-container .alert.alert-warning {
+    margin: 10px;
+}
+
 grid .grid-content-container tr:first-child td {
     border-top: 0;
 }
@@ -102,4 +106,25 @@ grid .grid-footer-container>span {
 
 grid .progress-bar {
     width: 100%;
+}
+
+grid .grid-header-table tr:last-child th {
+    padding: 0px;
+}
+
+grid .grid-header-table tr:last-child th div {
+    position: relative;
+}
+
+grid .grid-header-table tr:last-child th input {
+    border: 0;
+    font-weight: normal;
+    padding-right: 34px;
+}
+
+grid .grid-header-table tr:last-child th span {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 10px 12px;
 }

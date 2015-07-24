@@ -78,7 +78,7 @@ gulp.task('copy-demo-html', function () {
 });
 
 gulp.task('copy-demo-js', function () {
-  return gulp.src(paths.source)
+  return gulp.src(paths.amd)
     .pipe(gulp.dest(paths.demo));
 });
 
