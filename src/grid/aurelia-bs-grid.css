@@ -84,6 +84,7 @@ grid .grid-content-container tr:first-child td {
     border-top: 0;
 }
 
+
 grid .grid-footer-container {
     border-top: 1px solid gainsboro;
     padding: 8px;
@@ -108,21 +109,22 @@ grid .progress-bar {
     width: 100%;
 }
 
-grid .grid-header-table tr:last-child th {
+grid .grid-header-table .grid-column-filters th {
     padding: 0px;
 }
 
-grid .grid-header-table tr:last-child th div {
+grid .grid-header-table .grid-column-filters th div {
     position: relative;
 }
 
-grid .grid-header-table tr:last-child th input {
+grid .grid-header-table .grid-column-filters th input {
     border: 0;
     font-weight: normal;
     padding-right: 34px;
+    border-radius: 0;
 }
 
-grid .grid-header-table tr:last-child th span {
+grid .grid-header-table .grid-column-filters th span {
     position: absolute;
     top: 0px;
     right: 0px;

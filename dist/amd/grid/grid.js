@@ -237,7 +237,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 				if (this.pager) this.pager.update(this.pageNumber, Number(this.pageSize), Number(this.count));
 
 				this.firstVisibleItem = (this.pageNumber - 1) * Number(this.pageSize) + 1;
-				this.lastVisibleItem = this.pageNumber * Number(this.pageSize);
+				this.lastVisibleItem = Math.min(this.pageNumber * Number(this.pageSize), this.count);
 			}
 		}, {
 			key: 'fieldSorter',
