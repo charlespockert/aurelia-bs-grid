@@ -19,6 +19,7 @@ export class Grid {
 	// Filtering
 	@bindable showColumnFilters = false;
 	@bindable serverFiltering = false;
+	@bindable filterDebounce = 500;
 
 	// Pagination
 	@bindable serverPaging = false;
@@ -128,6 +129,9 @@ export class Grid {
 
 	bind(executionContext) {
 
+		// Listen for window resize so we can re-flow the grid layout
+		this.resizeListener = window.addEventListener('resize', this.syncColumnHeadersWithColumns.bind(this));	
+
 		this["$parent"] = executionContext;
 
 		// Ensure the grid settings
@@ -184,6 +188,7 @@ export class Grid {
 
 	unbind() {
 		this.unbinding = true;
+		window.removeEventListener('resize', this.resizeListener);
 		this.dontWatchForChanges();
 	}
 
@@ -365,10 +370,36 @@ export class Grid {
 
 		return cols;
 	}
+	
+	debounce(func, wait) {
+	    var timeout;
 
+	    // the debounced function
+	    return function() {
+
+	        var context = this,
+	            args = arguments;
+
+	        // nulls out timer and calls original function
+	        var later = function() {
+	            timeout = null;
+	            func.apply(context, args);
+	        };
+
+	        // restart the timer to call last function
+	        clearTimeout(timeout);
+	        timeout = setTimeout(later, wait);
+	    };
+	}
 
 	updateFilters() {
-		this.refresh();
+		// Debounce
+
+		if(!this.debouncedUpdateFilters) {
+			this.debouncedUpdateFilters = this.debounce(this.refresh.bind(this), this.filterDebounce || 100);
+		}
+
+		this.debouncedUpdateFilters();	
 	}
 
 	/* === Data === */

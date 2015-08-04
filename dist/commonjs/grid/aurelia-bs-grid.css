@@ -84,9 +84,6 @@ grid .grid-content-container tr:first-child td {
     border-top: 0;
 }
 
-grid .grid-content-container tr.active td {
-    background-color: #337ab7;
-}
 
 grid .grid-footer-container {
     border-top: 1px solid gainsboro;

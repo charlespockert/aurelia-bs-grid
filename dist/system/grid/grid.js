@@ -36,6 +36,8 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 
 					_defineDecoratedPropertyDescriptor(this, 'serverFiltering', _instanceInitializers);
 
+					_defineDecoratedPropertyDescriptor(this, 'filterDebounce', _instanceInitializers);
+
 					_defineDecoratedPropertyDescriptor(this, 'serverPaging', _instanceInitializers);
 
 					_defineDecoratedPropertyDescriptor(this, 'pageable', _instanceInitializers);
@@ -145,6 +147,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 				}, {
 					key: 'bind',
 					value: function bind(executionContext) {
+						this.resizeListener = window.addEventListener('resize', this.syncColumnHeadersWithColumns.bind(this));
 
 						this['$parent'] = executionContext;
 
@@ -187,6 +190,7 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 					key: 'unbind',
 					value: function unbind() {
 						this.unbinding = true;
+						window.removeEventListener('resize', this.resizeListener);
 						this.dontWatchForChanges();
 					}
 				}, {
@@ -350,9 +354,33 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 						return cols;
 					}
 				}, {
+					key: 'debounce',
+					value: function debounce(func, wait) {
+						var timeout;
+
+						return function () {
+
+							var context = this,
+							    args = arguments;
+
+							var later = function later() {
+								timeout = null;
+								func.apply(context, args);
+							};
+
+							clearTimeout(timeout);
+							timeout = setTimeout(later, wait);
+						};
+					}
+				}, {
 					key: 'updateFilters',
 					value: function updateFilters() {
-						this.refresh();
+
+						if (!this.debouncedUpdateFilters) {
+							this.debouncedUpdateFilters = this.debounce(this.refresh.bind(this), this.filterDebounce || 100);
+						}
+
+						this.debouncedUpdateFilters();
 					}
 				}, {
 					key: 'refresh',
@@ -494,6 +522,13 @@ System.register(['aurelia-framework', './grid-column', 'gooy/aurelia-compiler', 
 					decorators: [bindable],
 					initializer: function initializer() {
 						return false;
+					},
+					enumerable: true
+				}, {
+					key: 'filterDebounce',
+					decorators: [bindable],
+					initializer: function initializer() {
+						return 500;
 					},
 					enumerable: true
 				}, {

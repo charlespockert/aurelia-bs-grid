@@ -33,6 +33,12 @@
                 </table>
                 <div show.bind="showNoRowsMessage && count === 0" class="alert alert-warning">${ noRowsMessage }</div>
             </div>
+            <div class="grid-overlay" if.bind="loading"></div>
+            <div if.bind="loading" class="progress grid-progress-indicator">
+                <div class="progress-bar progress-bar-striped active" role="progressbar">
+                    <span>${ loadingMessage }</span>
+                </div>
+            </div>
             <!-- Footer div -->
             <div class="grid-footer-container" if.bind="pageable">
                 <pager num-to-show.bind="pagerSize" pager.ref="pager" on-page-changed.call="pageChanged($event)" show-first-last-buttons.bind="showFirstLastButtons" show-jump-buttons.bind="showJumpButtons"></pager>
