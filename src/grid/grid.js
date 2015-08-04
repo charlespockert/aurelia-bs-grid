@@ -492,6 +492,8 @@ export class Grid {
 	select(item) {
 		if(this.selectable)
 			this.selectedItem = item;
+
+		return true;
 	}
 
 	/* === Change handlers === */

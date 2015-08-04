@@ -440,6 +440,8 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			key: 'select',
 			value: function select(item) {
 				if (this.selectable) this.selectedItem = item;
+
+				return true;
 			}
 		}, {
 			key: 'noRowsMessageChanged',
