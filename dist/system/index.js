@@ -3,8 +3,8 @@ System.register([], function (_export) {
 
   _export('configure', configure);
 
-  function configure(aurelia) {
-    aurelia.globalizeResources('./grid/grid');
+  function configure(frameworkConfig) {
+    frameworkConfig.aurelia.use.globalResources('./grid/grid');
   }
 
   return {

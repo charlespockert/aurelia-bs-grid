@@ -27,7 +27,7 @@
             <div class="grid-content-container">
                 <table class="table table-hover table-striped table-responsive selectable" show.bind="!showNoRowsMessage || (showNoRowsMessage && count > 0)">
                     <tbody>
-                        <tr role="button" click.trigger="$parent.select($item)">
+                        <tr role="button" click.delegate="$parent.select($item)">
                         </tr>
                     </tbody>
                 </table>
