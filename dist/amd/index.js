@@ -6,7 +6,7 @@ define(['exports'], function (exports) {
   });
   exports.configure = configure;
 
-  function configure(aurelia) {
-    aurelia.globalizeResources('./grid/grid');
+  function configure(frameworkConfig) {
+    frameworkConfig.aurelia.use.globalResources('./grid/grid');
   }
 });

@@ -1,6 +1,6 @@
 {
     "name": "aurelia-bs-grid",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "description": "An Aurelia and Bootstrap powered datagrid plugin.",
     "keywords": [
         "aurelia",
