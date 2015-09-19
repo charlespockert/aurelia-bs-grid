@@ -1,0 +1,23 @@
+<template>
+    <section class="au-animate">
+        <br />
+        <button class="btn btn-success" click.delegate="addPerson()">Add Someone</button>
+        <button class="btn btn-danger" click.delegate="removePerson()">Remove Someone</button>
+        <br />
+        <br />
+        <!-- Grid definition -->
+        <grid read.call="getLocalData($event)" grid-height.bind="200" page-size="5" grid.ref="grid" server-paging.bind="false" server-sorting.bind="false" no-rows-message="Nothing to see here!" show-jump-buttons.bind="false" show-first-last-buttons.bind="false" page-sizes.bind="[5, 10, 15]" selectable.bind="true">
+            <grid-row>
+                <grid-col heading="ID" field="id" class="col-md-1"><strong>${ $item.id }</strong></grid-col>
+                <grid-col heading="Name" field="name" class="col-md-2">${ $item.name }</grid-col>
+            </grid-row>
+        </grid>
+
+        <form class="form">
+            <div class="form-group">
+                <label>Name</label>
+                <input value.bind="grid.selectedItem.name" class="form-control"></input>
+            </div>
+        </form>
+    </section>
+</template>

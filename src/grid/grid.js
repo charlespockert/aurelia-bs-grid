@@ -1,4 +1,4 @@
-import {bindable, inject, skipContentProcessing, ObserverLocator, customElement } from 'aurelia-framework';
+import {bindable, inject, processContent, ObserverLocator, customElement, skipContentProcessing } from 'aurelia-framework';
 import {GridColumn} from './grid-column';
 import {Compiler} from 'charlespockert/aurelia-compiler';
 import './aurelia-bs-grid.css!';

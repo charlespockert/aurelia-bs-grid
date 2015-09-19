@@ -1,0 +1,12 @@
+<template>
+    <section class="au-animate">
+        <br />
+        <!-- Grid definition -->
+        <grid read.call="getLocalData($event)" grid.ref="grid">
+            <grid-row>
+                <grid-col heading="ID" field="id" class="col-xs-1">${ $item.id }</grid-col>
+                <grid-col heading="Name" field="name" class="col-xs-11">${ $item.name }</grid-col>
+            </grid-row>
+        </grid>
+    </section>
+</template>

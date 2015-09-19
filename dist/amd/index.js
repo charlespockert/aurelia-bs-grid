@@ -1,12 +1,13 @@
-define(['exports'], function (exports) {
-  'use strict';
+define(["exports"], function (exports) {
+  "use strict";
 
-  Object.defineProperty(exports, '__esModule', {
+  Object.defineProperty(exports, "__esModule", {
     value: true
   });
   exports.configure = configure;
 
-  function configure(frameworkConfig) {
-    frameworkConfig.aurelia.use.globalResources('./grid/grid');
+  function configure(aurelia) {
+    console.log("Loading grid");
+    aurelia.globalResources('./grid/grid');
   }
 });

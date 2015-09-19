@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler', './aurelia-bs-grid.css!'], function (exports, _aureliaFramework, _gridColumn, _gooyAureliaCompiler, _aureliaBsGridCss) {
+define(['exports', 'aurelia-framework', './grid-column', 'charlespockert/aurelia-compiler', './aurelia-bs-grid.css!'], function (exports, _aureliaFramework, _gridColumn, _charlespockertAureliaCompiler, _aureliaBsGridCss) {
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -274,6 +274,8 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 			this.element = element;
 			this.compiler = compiler;
 			this.observerLocator = observerLocator;
+
+			throw new Error("ARgh!");
 
 			this.processUserTemplate();
 		}
@@ -671,8 +673,7 @@ define(['exports', 'aurelia-framework', './grid-column', 'gooy/aurelia-compiler'
 		}], null, _instanceInitializers);
 
 		var _Grid = Grid;
-		Grid = (0, _aureliaFramework.inject)(Element, _gooyAureliaCompiler.Compiler, _aureliaFramework.ObserverLocator)(Grid) || Grid;
-		Grid = (0, _aureliaFramework.skipContentProcessing)()(Grid) || Grid;
+		Grid = (0, _aureliaFramework.inject)(Element, _charlespockertAureliaCompiler.Compiler, _aureliaFramework.ObserverLocator)(Grid) || Grid;
 		Grid = (0, _aureliaFramework.customElement)('grid')(Grid) || Grid;
 		return Grid;
 	})();

@@ -1,3 +1,4 @@
-export function configure(frameworkConfig){
-  frameworkConfig.aurelia.use.globalResources('./grid/grid');
+export function configure(aurelia){
+	console.log("Loading grid");
+    aurelia.globalResources('./grid/grid');
 }

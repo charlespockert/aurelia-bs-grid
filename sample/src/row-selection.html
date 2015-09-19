@@ -1,0 +1,13 @@
+<template>
+    <section class="au-animate">
+        <br/>
+        <p>Currently selected: ${ selected.id } - ${ selected.name }</p>
+        <!-- Grid definition -->
+        <grid grid-height.bind="400" read.call="getLocalData($event)" selected-item.two-way="selected" selectable.bind="true" grid.ref="grid" server-paging.bind="false" server-sorting.bind="false">
+            <grid-row>
+                <grid-col heading="ID" field="id" class="col-md-1">${ $item.id }</grid-col>
+                <grid-col heading="Name" field="name" class="col-md-2">${ $item.name }</grid-col>
+            </grid-row>
+        </grid>
+    </section>
+</template>

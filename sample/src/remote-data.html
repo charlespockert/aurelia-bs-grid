@@ -1,0 +1,14 @@
+<template>
+    <section class="au-animate">
+        <br />
+        <!-- Grid definition -->
+        <grid grid-height.bind="400" read.call="getComments($event)" grid.ref="grid" server-paging.bind="true" server-sorting.bind="false" selectable="true" show-column-filters.bind="true">
+            <grid-row>
+                <grid-col heading="ID" field="id" class="col-md-1">${ $item.id }</grid-col>
+                <grid-col heading="Name" field="name" class="col-md-2">${ $item.name }</grid-col>
+                <grid-col heading="Email" show-filter="false" field="email" class="col-md-1"><a href="mailto:${ $item.email }">${ $item.email }</a></grid-col>
+                <grid-col heading="Body" field="body" class="col-md-8">${ $item.body }</grid-col>
+            </grid-row>
+        </grid>
+    </section>
+</template>

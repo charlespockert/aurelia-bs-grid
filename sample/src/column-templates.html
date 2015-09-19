@@ -1,0 +1,17 @@
+<template>
+    <section class="au-animate">
+        <br />
+        <!-- Grid definition -->
+        <grid read.call="getLocalData($event)" page-size="5" grid.ref="grid" server-paging.bind="false" server-sorting.bind="false" grid-height.bind="400">
+            <grid-row>
+                <grid-col heading="ID" field="id" class="col-md-2">This is a <i>column template</i>: <strong>${ $item.id }</strong></grid-col>
+                <grid-col heading="Name" field="name" class="col-md-5">
+                    <button class="btn btn-primary" click.delegate="$parent.$parent.itemClicked($item)">Click me I'm ... ${ $item.name }!</button>
+                </grid-col>
+                <grid-col heading="Test" field="name" class="col-md-5">
+                    <a href="#mutation">Jump to Datasource Mutation Page</a>
+                </grid-col>
+            </grid-row>
+        </grid>
+    </section>
+</template>
