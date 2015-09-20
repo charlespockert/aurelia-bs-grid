@@ -1,10 +1,10 @@
-import {bindable, inject, processContent, ObserverLocator, customElement } from 'aurelia-framework';
+import {bindable, inject, processContent, ObserverLocator, customElement, skipContentProcessing } from 'aurelia-framework';
 import {GridColumn} from './grid-column';
-import {Compiler} from 'charlespockert/aurelia-compiler';
+import {Compiler} from 'CharlesPockert/aurelia-compiler';
 import './aurelia-bs-grid.css!';
 
 @customElement('grid')
-// @skipContentProcessing()
+@skipContentProcessing()
 @inject(Element, Compiler, ObserverLocator)
 export class Grid {
 
@@ -89,7 +89,6 @@ export class Grid {
 		this.compiler = compiler;
 		this.observerLocator = observerLocator;
 
-throw new Error("ARgh!");
 		// Grab user template from element
 		this.processUserTemplate();
 	}

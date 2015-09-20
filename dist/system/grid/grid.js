@@ -1,4 +1,4 @@
-System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-compiler', './aurelia-bs-grid.css!'], function (_export) {
+System.register(['aurelia-framework', './grid-column', 'CharlesPockert/aurelia-compiler', './aurelia-bs-grid.css!'], function (_export) {
 	'use strict';
 
 	var bindable, inject, processContent, ObserverLocator, customElement, skipContentProcessing, GridColumn, Compiler, Grid;
@@ -19,8 +19,8 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 			skipContentProcessing = _aureliaFramework.skipContentProcessing;
 		}, function (_gridColumn) {
 			GridColumn = _gridColumn.GridColumn;
-		}, function (_charlespockertAureliaCompiler) {
-			Compiler = _charlespockertAureliaCompiler.Compiler;
+		}, function (_CharlesPockertAureliaCompiler) {
+			Compiler = _CharlesPockertAureliaCompiler.Compiler;
 		}, function (_aureliaBsGridCss) {}],
 		execute: function () {
 			Grid = (function () {

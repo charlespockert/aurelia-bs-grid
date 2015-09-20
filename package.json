@@ -1,20 +1,26 @@
 {
-    "name": "aurelia-bs-grid",
-    "version": "0.0.3",
-    "description": "An Aurelia and Bootstrap powered datagrid plugin.",
-    "keywords": [
-        "aurelia",
-        "plugin",
-        "datagrid"
-    ],
-    "homepage": "http://github.com/CharlesPockert",
-    "bugs": {
-        "url": "https://github.com/CharlesPockert/aurelia-bs-grid/issues"
-    },
-    "license": "MIT",
-    "author": "Charles Pockert <charles.pockert@googlemail.com>",
+  "name": "aurelia-bs-grid",
+  "version": "0.0.4",
+  "description": "An Aurelia and Bootstrap powered datagrid plugin.",
+  "keywords": [
+    "aurelia",
+    "plugin",
+    "datagrid"
+  ],
+  "homepage": "http://github.com/CharlesPockert",
+  "bugs": {
+    "url": "https://github.com/CharlesPockert/aurelia-bs-grid/issues"
+  },
+  "license": "MIT",
+  "author": "Charles Pockert <charles.pockert@googlemail.com>",
+  "directories": {
+    "lib": "dist/system"
+  },
+  "jspm": {
+    "main": "index",
+    "format": "amd",
     "directories": {
-      "lib": "dist/system"
+      "lib": "dist/amd"
     },
     "dependencies": {
       "aurelia-binding": "github:aurelia/binding@^0.9.1",
@@ -23,11 +29,7 @@
       "aurelia-logging": "github:aurelia/logging@^0.7.0",
       "aurelia-metadata": "github:aurelia/metadata@^0.8.0",
       "aurelia-templating": "github:aurelia/templating@^0.15.3",
-      "systemjs/plugin-css": "github:systemjs/plugin-css@^0.1.16"
-      },
-    "repository": {
-        "type": "git",
-        "url": "http://github.com/CharlesPockert/aurelia-bs-grid"
+      "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@^0.0.6",
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.22",

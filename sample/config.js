@@ -19,7 +19,6 @@ System.config({
   packages: {
     "/src/aurelia-bs-grid": {
       "main": "index",
-     // "format": "es6",
       "dependencies": {
         "aurelia-binding": "github:aurelia/binding@^0.9.1",
         "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.10.1",
@@ -38,11 +37,12 @@ System.config({
     "babel": "npm:babel-core@5.8.23",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "bootstrap": "github:twbs/bootstrap@3.3.5",
-    "charlespockert/aurelia-compiler": "github:charlespockert/aurelia-compiler@0.0.6",
+    "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@0.0.6",
     "core-js": "npm:core-js@1.1.4",
     "css": "github:systemjs/plugin-css@0.1.17",
     "font-awesome": "npm:font-awesome@4.4.0",
     "systemjs/plugin-css": "github:systemjs/plugin-css@0.1.17",
+    "twbs/bootstrap": "github:twbs/bootstrap@3.3.5",
     "github:aurelia/binding@0.9.1": {
       "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.10.1",
       "aurelia-metadata": "github:aurelia/metadata@0.8.0",
