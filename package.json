@@ -29,7 +29,7 @@
       "aurelia-logging": "github:aurelia/logging@^0.7.0",
       "aurelia-metadata": "github:aurelia/metadata@^0.8.0",
       "aurelia-templating": "github:aurelia/templating@^0.15.3",
-      "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@^0.0.6",
+      "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@^0.0.6"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.22",
