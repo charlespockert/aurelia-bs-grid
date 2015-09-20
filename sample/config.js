@@ -28,6 +28,7 @@ System.config({
   },
 
   map: {
+    "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@0.0.6",
     "aurelia-binding": "github:aurelia/binding@0.9.1",
     "aurelia-bootstrapper": "github:aurelia/bootstrapper@0.17.0",
     "aurelia-framework": "github:aurelia/framework@0.16.0",
@@ -37,7 +38,6 @@ System.config({
     "babel": "npm:babel-core@5.8.23",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "bootstrap": "github:twbs/bootstrap@3.3.5",
-    "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@0.0.6",
     "core-js": "npm:core-js@1.1.4",
     "css": "github:systemjs/plugin-css@0.1.17",
     "font-awesome": "npm:font-awesome@4.4.0",
@@ -152,7 +152,7 @@ System.config({
       "aurelia-task-queue": "github:aurelia/task-queue@0.7.0",
       "core-js": "npm:core-js@0.9.18"
     },
-    "github:charlespockert/aurelia-compiler@0.0.6": {
+    "github:CharlesPockert/aurelia-compiler@0.0.6": {
       "aurelia-loader": "github:aurelia/loader@0.9.0",
       "aurelia-loader-default": "github:aurelia/loader-default@0.10.0",
       "aurelia-templating": "github:aurelia/templating@0.15.3"

@@ -1,6 +1,5 @@
 {
   "jspm": {
-    "directories": {},
     "dependencies": {
       "aurelia-binding": "github:aurelia/binding@^0.9.1",
       "aurelia-bootstrapper": "github:aurelia/bootstrapper@^0.17.0",
