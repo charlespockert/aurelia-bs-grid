@@ -1,6 +1,7 @@
 {
   "jspm": {
     "dependencies": {
+      "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@^0.0.7",
       "aurelia-binding": "github:aurelia/binding@^0.9.1",
       "aurelia-bootstrapper": "github:aurelia/bootstrapper@^0.17.0",
       "aurelia-framework": "github:aurelia/framework@^0.16.0",
