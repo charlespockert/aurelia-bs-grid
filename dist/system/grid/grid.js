@@ -1,4 +1,4 @@
-System.register(['aurelia-framework', './grid-column', 'CharlesPockert/aurelia-compiler', './aurelia-bs-grid.css!'], function (_export) {
+System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-compiler', './aurelia-bs-grid.css!'], function (_export) {
 	'use strict';
 
 	var bindable, inject, processContent, ObserverLocator, customElement, skipContentProcessing, GridColumn, Compiler, Grid;
