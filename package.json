@@ -23,7 +23,7 @@
       "lib": "dist/amd"
     },
     "dependencies": {
-      "CharlesPockert/aurelia-compiler": "github:charlespockert/aurelia-compiler@^0.0.7",
+      "charlespockert/aurelia-compiler": "github:charlespockert/aurelia-compiler@^0.0.7",
       "aurelia-binding": "github:aurelia/binding@^0.9.1",
       "aurelia-bootstrapper": "github:aurelia/bootstrapper@^0.17.0",
       "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.10.1",
