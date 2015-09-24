@@ -14,7 +14,7 @@ var _aureliaFramework = require('aurelia-framework');
 
 var _gridColumn = require('./grid-column');
 
-var _CharlesPockertAureliaCompiler = require('CharlesPockert/aurelia-compiler');
+var _CharlesPockertAureliaCompiler = require('charlespockert/aurelia-compiler');
 
 require('./aurelia-bs-grid.css!');
 
