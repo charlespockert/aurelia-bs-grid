@@ -13,7 +13,7 @@ System.config({
   },
 
   map: {
-    "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@0.0.7",
+    "charlespockert/aurelia-compiler": "github:charlespockert/aurelia-compiler@0.0.7",
     "aurelia-binding": "github:aurelia/binding@0.9.1",
     "aurelia-bootstrapper": "github:aurelia/bootstrapper@0.17.0",
     "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.10.1",
@@ -26,7 +26,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.16",
     "traceur": "github:jmcriffey/bower-traceur@0.0.91",
     "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.91",
-    "github:CharlesPockert/aurelia-compiler@0.0.7": {
+    "github:charlespockert/aurelia-compiler@0.0.7": {
       "aurelia-loader": "github:aurelia/loader@0.9.0",
       "aurelia-loader-default": "github:aurelia/loader-default@0.10.0",
       "aurelia-templating": "github:aurelia/templating@0.15.3"
