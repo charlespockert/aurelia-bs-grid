@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', './grid-column', 'CharlesPockert/aurelia-compiler', './aurelia-bs-grid.css!'], function (exports, _aureliaFramework, _gridColumn, _CharlesPockertAureliaCompiler, _aureliaBsGridCss) {
+define(['exports', 'aurelia-framework', './grid-column', 'charlespockert/aurelia-compiler', './aurelia-bs-grid.css!'], function (exports, _aureliaFramework, _gridColumn, _CharlesPockertAureliaCompiler, _aureliaBsGridCss) {
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
