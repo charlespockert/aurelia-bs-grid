@@ -1,6 +1,6 @@
 import {bindable, inject, processContent, ObserverLocator, customElement, skipContentProcessing } from 'aurelia-framework';
 import {GridColumn} from './grid-column';
-import {Compiler} from 'CharlesPockert/aurelia-compiler';
+import {Compiler} from 'charlespockert/aurelia-compiler';
 import './aurelia-bs-grid.css!';
 
 @customElement('grid')
