@@ -7,9 +7,9 @@
     "plugin",
     "datagrid"
   ],
-  "homepage": "http://github.com/CharlesPockert",
+  "homepage": "http://github.com/charlespockert",
   "bugs": {
-    "url": "https://github.com/CharlesPockert/aurelia-bs-grid/issues"
+    "url": "https://github.com/charlespockert/aurelia-bs-grid/issues"
   },
   "license": "MIT",
   "author": "Charles Pockert <charles.pockert@googlemail.com>",
@@ -23,7 +23,7 @@
       "lib": "dist/amd"
     },
     "dependencies": {
-      "CharlesPockert/aurelia-compiler": "github:CharlesPockert/aurelia-compiler@^0.0.7",
+      "CharlesPockert/aurelia-compiler": "github:charlespockert/aurelia-compiler@^0.0.7",
       "aurelia-binding": "github:aurelia/binding@^0.9.1",
       "aurelia-bootstrapper": "github:aurelia/bootstrapper@^0.17.0",
       "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.10.1",
