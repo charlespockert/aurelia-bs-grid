@@ -2,6 +2,12 @@
 
 A lightweight Aurelia native data-grid control (no jQuery, no unnecessary dependencies - unless you count Bootstrap...!)
 
+## Please note:
+
+This is a proof of concept and probably isn't production ready by any stretch - please use primarily for educational purposes unless you don't mind fixing bugs and having a minimal set of functionality :)
+
+At some point in the future it will hopefully be a viable alternative to other data grids
+
 Demo here:
 http://charlespockert.github.io/aurelia-bs-grid-demo/
 
