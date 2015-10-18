@@ -23,13 +23,16 @@
       "lib": "dist/amd"
     },
     "dependencies": {
-      "charlespockert/aurelia-compiler": "github:charlespockert/aurelia-compiler@^0.0.7",
-      "aurelia-binding": "github:aurelia/binding@^0.9.1",
-      "aurelia-bootstrapper": "github:aurelia/bootstrapper@^0.17.0",
-      "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.10.1",
-      "aurelia-logging": "github:aurelia/logging@^0.7.0",
-      "aurelia-metadata": "github:aurelia/metadata@^0.8.0",
-      "aurelia-templating": "github:aurelia/templating@^0.15.3"
+      "aurelia-binding": "github:aurelia/binding@^0.10.2",
+      "aurelia-bootstrapper": "github:aurelia/bootstrapper@^0.18.0",
+      "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.11.2",
+      "aurelia-framework": "github:aurelia/framework@^0.17.0",
+      "aurelia-loader": "github:aurelia/loader@^0.10.0",
+      "aurelia-logging": "github:aurelia/logging@^0.8.0",
+      "aurelia-metadata": "github:aurelia/metadata@^0.9.0",
+      "aurelia-path": "github:aurelia/path@^0.10.0",
+      "aurelia-task-queue": "github:aurelia/task-queue@^0.8.0",
+      "aurelia-templating": "github:aurelia/templating@^0.16.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.22",

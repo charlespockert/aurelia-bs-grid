@@ -1,7 +1,7 @@
-System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-compiler', './aurelia-bs-grid.css!'], function (_export) {
+System.register(['aurelia-framework', './grid-column'], function (_export) {
 	'use strict';
 
-	var bindable, inject, processContent, ObserverLocator, customElement, skipContentProcessing, GridColumn, Compiler, Grid;
+	var bindable, inject, bindingEngine, customElement, processContent, TargetInstruction, ViewCompiler, ViewSlot, ViewResources, Container, GridColumn, Grid;
 
 	var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -9,19 +9,48 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 
 	function _defineDecoratedPropertyDescriptor(target, key, descriptors) { var _descriptor = descriptors[key]; if (!_descriptor) return; var descriptor = {}; for (var _key in _descriptor) descriptor[_key] = _descriptor[_key]; descriptor.value = descriptor.initializer ? descriptor.initializer.call(target) : undefined; Object.defineProperty(target, key, descriptor); }
 
+	function processUserTemplate(element) {
+
+		var cols = [];
+
+		var rowElement = element.querySelector("grid-row");
+		var columnElements = Array.prototype.slice.call(rowElement.querySelectorAll("grid-col"));
+
+		columnElements.forEach(function (c) {
+			var attrs = Array.prototype.slice.call(c.attributes),
+			    colHash = {};
+			attrs.forEach(function (a) {
+				return colHash[a.name] = a.value;
+			});
+
+			var col = new GridColumn(colHash, c.innerHTML);
+
+			cols.push(col);
+		});
+
+		var rowAttrs = {};
+		var attrs = Array.prototype.slice.call(rowElement.attributes);
+		attrs.forEach(function (a) {
+			return rowAttrs[a.name] = a.value;
+		});
+
+		return { columns: cols, rowAttrs: rowAttrs };
+	}
 	return {
 		setters: [function (_aureliaFramework) {
 			bindable = _aureliaFramework.bindable;
 			inject = _aureliaFramework.inject;
-			processContent = _aureliaFramework.processContent;
-			ObserverLocator = _aureliaFramework.ObserverLocator;
+			bindingEngine = _aureliaFramework.bindingEngine;
 			customElement = _aureliaFramework.customElement;
-			skipContentProcessing = _aureliaFramework.skipContentProcessing;
+			processContent = _aureliaFramework.processContent;
+			TargetInstruction = _aureliaFramework.TargetInstruction;
+			ViewCompiler = _aureliaFramework.ViewCompiler;
+			ViewSlot = _aureliaFramework.ViewSlot;
+			ViewResources = _aureliaFramework.ViewResources;
+			Container = _aureliaFramework.Container;
 		}, function (_gridColumn) {
 			GridColumn = _gridColumn.GridColumn;
-		}, function (_CharlesPockertAureliaCompiler) {
-			Compiler = _CharlesPockertAureliaCompiler.Compiler;
-		}, function (_aureliaBsGridCss) {}],
+		}],
 		execute: function () {
 			Grid = (function () {
 				var _instanceInitializers = {};
@@ -209,7 +238,7 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 					enumerable: true
 				}], null, _instanceInitializers);
 
-				function Grid(element, compiler, observerLocator) {
+				function Grid(element, vc, vr, container, targetInstruction) {
 					_classCallCheck(this, _Grid);
 
 					_defineDecoratedPropertyDescriptor(this, 'gridHeight', _instanceInitializers);
@@ -284,42 +313,16 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 					this.scrollBarWidth = 16;
 
 					this.element = element;
-					this.compiler = compiler;
-					this.observerLocator = observerLocator;
+					this.viewCompiler = vc;
+					this.viewResources = vr;
+					this.container = container;
 
-					this.processUserTemplate();
+					var behavior = targetInstruction.behaviorInstructions[0];
+					this.columns = behavior.gridColumns;
+					this.rowAttrs = behavior.rowAttrs;
 				}
 
 				_createDecoratedClass(Grid, [{
-					key: 'processUserTemplate',
-					value: function processUserTemplate() {
-						var _this = this;
-
-						var rowElement = this.element.querySelector("grid-row");
-						var columnElements = Array.prototype.slice.call(rowElement.querySelectorAll("grid-col"));
-
-						columnElements.forEach(function (c) {
-
-							var attrs = Array.prototype.slice.call(c.attributes),
-							    colHash = {};
-							attrs.forEach(function (a) {
-								return colHash[a.name] = a.value;
-							});
-
-							var col = new GridColumn(colHash, c.innerHTML);
-
-							_this.addColumn(col);
-						});
-
-						this.rowAttrs = {};
-						var attrs = Array.prototype.slice.call(rowElement.attributes);
-						attrs.forEach(function (a) {
-							return _this.rowAttrs[a.name] = a.value;
-						});
-
-						while (this.element.childNodes.length > 0) this.element.removeChild(this.element.childNodes[0]);
-					}
-				}, {
 					key: 'attached',
 					value: function attached() {
 						this.gridHeightChanged();
@@ -335,21 +338,35 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 
 						if (this.serverPaging && !this.serverSorting) this.sortable = false;
 
-						var table = this.element.querySelector("table>tbody");
-						var rowTemplate = table.querySelector("tr");
+						var tbody = this.element.querySelector("table>tbody");
+						this.viewSlot = new ViewSlot(tbody, true, this);
 
-						var fragment = document.createDocumentFragment();
+						var row = tbody.querySelector("tr");
 
-						fragment.appendChild(rowTemplate);
+						this.addRowAttributes(row);
 
-						rowTemplate.setAttribute("repeat.for", "$item of data");
-						rowTemplate.setAttribute("class", "${ $item === $parent.selectedItem ? 'info' : '' }");
+						this.rowTemplate = document.createDocumentFragment();
+						this.rowTemplate.appendChild(row);
+
+						this.buildTemplates();
+					}
+				}, {
+					key: 'addRowAttributes',
+					value: function addRowAttributes(row) {
+						row.setAttribute("repeat.for", "$item of data");
+						row.setAttribute("class", "${ $item === $parent.selectedItem ? 'info' : '' }");
 
 						for (var prop in this.rowAttrs) {
 							if (this.rowAttrs.hasOwnProperty(prop)) {
-								rowTemplate.setAttribute(prop, this.rowAttrs[prop]);
+								row.setAttribute(prop, this.rowAttrs[prop]);
 							}
 						}
+					}
+				}, {
+					key: 'buildTemplates',
+					value: function buildTemplates() {
+						var rowTemplate = this.rowTemplate.cloneNode(true);
+						var row = rowTemplate.querySelector("tr");
 
 						this.columns.forEach(function (c) {
 							var td = document.createElement("td");
@@ -361,10 +378,13 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 								}
 							}
 
-							rowTemplate.appendChild(td);
+							row.appendChild(td);
 						});
 
-						this.compiler.compile(table, this, undefined, fragment);
+						var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
+
+						this.viewSlot.swap(view);
+						this.viewSlot.attached();
 
 						this.noRowsMessageChanged();
 					}
@@ -506,13 +526,13 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 				}, {
 					key: 'applyFilter',
 					value: function applyFilter(data) {
-						var _this2 = this;
+						var _this = this;
 
 						return data.filter(function (row) {
 							var include = true;
 
-							for (var i = _this2.columns.length - 1; i >= 0; i--) {
-								var col = _this2.columns[i];
+							for (var i = _this.columns.length - 1; i >= 0; i--) {
+								var col = _this.columns[i];
 
 								if (col.filterValue !== "" && row[col.field].toString().indexOf(col.filterValue) === -1) {
 									include = false;
@@ -574,7 +594,7 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 				}, {
 					key: 'getData',
 					value: function getData() {
-						var _this3 = this;
+						var _this2 = this;
 
 						if (!this.read) throw new Error("No read method specified for grid");
 
@@ -587,13 +607,13 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 							paging: { page: this.pageNumber, size: Number(this.pageSize) },
 							filtering: this.getFilterColumns()
 						}).then(function (result) {
-							_this3.handleResult(result);
+							_this2.handleResult(result);
 
-							_this3.loading = false;
+							_this2.loading = false;
 						}, function (result) {
-							if (_this3.onReadError) _this3.onReadError(result);
+							if (_this2.onReadError) _this2.onReadError(result);
 
-							_this3.loading = false;
+							_this2.loading = false;
 						});
 					}
 				}, {
@@ -616,18 +636,18 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 				}, {
 					key: 'watchForChanges',
 					value: function watchForChanges() {
-						var _this4 = this;
+						var _this3 = this;
 
 						this.dontWatchForChanges();
 
-						if (!this.unbinding) this.subscription = this.observerLocator.getArrayObserver(this.cache).subscribe(function (splices) {
-								_this4.refresh();
+						if (!this.unbinding) this.subscription = bindingEngine.collectionObserver(this.cache).subscribe(function (splices) {
+								_this3.refresh();
 							});
 					}
 				}, {
 					key: 'dontWatchForChanges',
 					value: function dontWatchForChanges() {
-						if (this.subscription) this.subscription();
+						if (this.subscription) this.subscription.dispose();
 					}
 				}, {
 					key: 'select',
@@ -683,8 +703,14 @@ System.register(['aurelia-framework', './grid-column', 'charlespockert/aurelia-c
 				}], null, _instanceInitializers);
 
 				var _Grid = Grid;
-				Grid = inject(Element, Compiler, ObserverLocator)(Grid) || Grid;
-				Grid = skipContentProcessing()(Grid) || Grid;
+				Grid = inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction)(Grid) || Grid;
+				Grid = processContent(function (viewCompiler, viewResources, element, instruction) {
+					var result = processUserTemplate(element);
+					instruction.gridColumns = result.columns;
+					instruction.rowAttrs = result.rowAttrs;
+
+					return true;
+				})(Grid) || Grid;
 				Grid = customElement('grid')(Grid) || Grid;
 				return Grid;
 			})();

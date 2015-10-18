@@ -1,11 +1,16 @@
-import {bindable, inject, processContent, ObserverLocator, customElement, skipContentProcessing } from 'aurelia-framework';
+import {bindable, inject, bindingEngine, customElement, processContent, TargetInstruction } from 'aurelia-framework';
 import {GridColumn} from './grid-column';
-import {Compiler} from 'charlespockert/aurelia-compiler';
-import './aurelia-bs-grid.css!';
+import {ViewCompiler, ViewSlot, ViewResources, Container} from 'aurelia-framework';
 
 @customElement('grid')
-@skipContentProcessing()
-@inject(Element, Compiler, ObserverLocator)
+@processContent(function(viewCompiler, viewResources, element, instruction) {
+	// Do stuff
+	var columns = processUserTemplate(element);
+	instruction.gridColumns = columns;
+
+	return true;
+})
+@inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction)
 export class Grid {
 
 	/* == Styling == */
@@ -84,39 +89,23 @@ export class Grid {
 	// TODO: calc scrollbar width using browser
 	scrollBarWidth = 16;
 
-	constructor(element, compiler, observerLocator) {
+	// Templating
+	viewSlot;
+
+
+	// Services
+	viewCompiler;
+	viewResources;
+	container;
+
+	constructor(element, vc, vr, container, targetInstruction) {
 		this.element = element;
-		this.compiler = compiler;
-		this.observerLocator = observerLocator;
+		this.viewCompiler = vc;
+		this.viewResources = vr;
+		this.container = container;
 
-		// Grab user template from element
-		this.processUserTemplate();
-	}
 
-	processUserTemplate() {
-
-		// Get any col tags from the content
-		var rowElement = this.element.querySelector("grid-row");
-		var columnElements = Array.prototype.slice.call(rowElement.querySelectorAll("grid-col"));
-	
-		columnElements.forEach(c => {
-
-			var attrs = Array.prototype.slice.call(c.attributes), colHash = {};
-			attrs.forEach(a => colHash[a.name] = a.value);
-
-			var col = new GridColumn(colHash, c.innerHTML);
-
-			this.addColumn(col);
-		});
-
-		// Pull any row attrs into a hash object
-		this.rowAttrs = {};
-		var attrs = Array.prototype.slice.call(rowElement.attributes);
-		attrs.forEach(a => this.rowAttrs[a.name] = a.value);
-
-		// Remove all children
-		while(this.element.childNodes.length > 0)
-			this.element.removeChild(this.element.childNodes[0]);
+		this.columns = targetInstruction.behaviorInstructions[0].gridColumns;
 	}
 
 	/* === Lifecycle === */
@@ -144,25 +133,28 @@ export class Grid {
 		var table = this.element.querySelector("table>tbody");
 		var rowTemplate = table.querySelector("tr");
 
+		// The row template will host the viewslot for the rows
+	//	this.viewSlot = new ViewSlot(rowTemplate, true, this);
+
 		// Create a fragment we will manipulate the DOM in
 		var fragment = document.createDocumentFragment();
 
 		// Move the row template to the fragment
-		fragment.appendChild(rowTemplate);
+		//fragment.appendChild(rowTemplate);
 
 		// Create the repeater
-		rowTemplate.setAttribute("repeat.for", "$item of data");
-		rowTemplate.setAttribute("class", "${ $item === $parent.selectedItem ? 'info' : '' }");
+//		rowTemplate.setAttribute("repeat.for", "$item of data");
+//		rowTemplate.setAttribute("class", "${ $item === $parent.selectedItem ? 'info' : '' }");
 		
 		// Copy any user specified row attributes to the row template
-		for (var prop in this.rowAttrs) {
-    		if (this.rowAttrs.hasOwnProperty(prop)) {
-				rowTemplate.setAttribute(prop, this.rowAttrs[prop]);
-        	}
-		}	
+		// for (var prop in this.rowAttrs) {
+  //   		if (this.rowAttrs.hasOwnProperty(prop)) {
+		// 		rowTemplate.setAttribute(prop, this.rowAttrs[prop]);
+  //       	}
+		// }	
 
 		// Create the columns
-		this.columns.forEach(c => {
+		 this.columns.forEach(c => {
 			var td = document.createElement("td");
 
 			// Set attributes
@@ -176,11 +168,14 @@ export class Grid {
 	        	}
 			}	
 
-			rowTemplate.appendChild(td);
+			fragment.appendChild(td);
 		});
 
-		// Compile
-		this.compiler.compile(table, this, undefined, fragment);
+		// Now compile the row template
+		//var view = this.viewCompiler.compile(fragment, this.viewResources).create(this.container, this);
+			
+		//this.viewSlot.swap(view);
+		//this.viewSlot.attached();
 
 		// HACK: why is the change handler not firing for noRowsMessage?
 		this.noRowsMessageChanged();
@@ -475,8 +470,8 @@ export class Grid {
 		// Guard against data refresh events hitting after the user does anything that unloads the grid
 		if(!this.unbinding)
 		    // We can update the pager automagically
-		    this.subscription = this.observerLocator
-		        .getArrayObserver(this.cache)
+		    this.subscription = bindingEngine
+		        .collectionObserver(this.cache)
 		        .subscribe((splices) => {			
 					this.refresh();
 		        });
@@ -484,7 +479,7 @@ export class Grid {
 
 	dontWatchForChanges() {
 		if(this.subscription)
-			this.subscription();
+			this.subscription.dispose();
 	}
 
 	/* === Selection === */
@@ -542,5 +537,29 @@ export class Grid {
 		var body = this.element.querySelector(".grid-content-container");
 		return body.offsetHeight < body.scrollHeight || body.offsetWidth < body.scrollWidth;
 	}
+}
+
+function processUserTemplate(element) {
+
+	var cols = [];
+
+	// Get any col tags from the content
+	var rowElement = element.querySelector("grid-row");
+	var columnElements = Array.prototype.slice.call(rowElement.querySelectorAll("grid-col"));
+
+	columnElements.forEach(c => {
+		var attrs = Array.prototype.slice.call(c.attributes), colHash = {};
+		attrs.forEach(a => colHash[a.name] = a.value);
+
+		var col = new GridColumn(colHash, c.innerHTML);
+
+		cols.push(col);
+	});
+
+	return cols;
+	// Pull any row attrs into a hash object
+	// this.rowAttrs = {};
+	// var attrs = Array.prototype.slice.call(rowElement.attributes);
+	// attrs.forEach(a => this.rowAttrs[a.name] = a.value);
 }
 

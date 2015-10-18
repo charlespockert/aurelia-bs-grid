@@ -1,5 +1,11 @@
 <template>
     <require from="../pager/pager"></require>
+    <require from="./aurelia-bs-grid.css!"></require>
+
+    <!-- row template -->
+
+
+    <!-- grid itself -->
     <div>
         <div class="grid-container">
             <!-- Header table -->
@@ -27,7 +33,7 @@
             <div class="grid-content-container">
                 <table class="table table-hover table-striped table-responsive selectable" show.bind="!showNoRowsMessage || (showNoRowsMessage && count > 0)">
                     <tbody>
-                        <tr role="button" click.delegate="$parent.select($item)">
+                        <tr role="button" click.delegate="$parent.select($item)">     
                         </tr>
                     </tbody>
                 </table>
