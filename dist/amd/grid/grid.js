@@ -276,7 +276,9 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 			this.viewResources = vr;
 			this.container = container;
 
-			this.columns = targetInstruction.behaviorInstructions[0].gridColumns;
+			var behavior = targetInstruction.behaviorInstructions[0];
+			this.columns = behavior.gridColumns;
+			this.rowAttrs = behavior.rowAttrs;
 		}
 
 		_createDecoratedClass(Grid, [{
@@ -295,10 +297,35 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 
 				if (this.serverPaging && !this.serverSorting) this.sortable = false;
 
-				var table = this.element.querySelector("table>tbody");
-				var rowTemplate = table.querySelector("tr");
+				var tbody = this.element.querySelector("table>tbody");
+				this.viewSlot = new _aureliaFramework.ViewSlot(tbody, true, this);
 
-				var fragment = document.createDocumentFragment();
+				var row = tbody.querySelector("tr");
+
+				this.addRowAttributes(row);
+
+				this.rowTemplate = document.createDocumentFragment();
+				this.rowTemplate.appendChild(row);
+
+				this.buildTemplates();
+			}
+		}, {
+			key: 'addRowAttributes',
+			value: function addRowAttributes(row) {
+				row.setAttribute("repeat.for", "$item of data");
+				row.setAttribute("class", "${ $item === $parent.selectedItem ? 'info' : '' }");
+
+				for (var prop in this.rowAttrs) {
+					if (this.rowAttrs.hasOwnProperty(prop)) {
+						row.setAttribute(prop, this.rowAttrs[prop]);
+					}
+				}
+			}
+		}, {
+			key: 'buildTemplates',
+			value: function buildTemplates() {
+				var rowTemplate = this.rowTemplate.cloneNode(true);
+				var row = rowTemplate.querySelector("tr");
 
 				this.columns.forEach(function (c) {
 					var td = document.createElement("td");
@@ -310,8 +337,13 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 						}
 					}
 
-					fragment.appendChild(td);
+					row.appendChild(td);
 				});
+
+				var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
+
+				this.viewSlot.swap(view);
+				this.viewSlot.attached();
 
 				this.noRowsMessageChanged();
 			}
@@ -632,8 +664,9 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 		var _Grid = Grid;
 		Grid = (0, _aureliaFramework.inject)(Element, _aureliaFramework.ViewCompiler, _aureliaFramework.ViewResources, _aureliaFramework.Container, _aureliaFramework.TargetInstruction)(Grid) || Grid;
 		Grid = (0, _aureliaFramework.processContent)(function (viewCompiler, viewResources, element, instruction) {
-			var columns = processUserTemplate(element);
-			instruction.gridColumns = columns;
+			var result = processUserTemplate(element);
+			instruction.gridColumns = result.columns;
+			instruction.rowAttrs = result.rowAttrs;
 
 			return true;
 		})(Grid) || Grid;
@@ -662,6 +695,12 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 			cols.push(col);
 		});
 
-		return cols;
+		var rowAttrs = {};
+		var attrs = Array.prototype.slice.call(rowElement.attributes);
+		attrs.forEach(function (a) {
+			return rowAttrs[a.name] = a.value;
+		});
+
+		return { columns: cols, rowAttrs: rowAttrs };
 	}
 });

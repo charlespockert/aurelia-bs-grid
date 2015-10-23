@@ -5,8 +5,9 @@ import {ViewCompiler, ViewSlot, ViewResources, Container} from 'aurelia-framewor
 @customElement('grid')
 @processContent(function(viewCompiler, viewResources, element, instruction) {
 	// Do stuff
-	var columns = processUserTemplate(element);
-	instruction.gridColumns = columns;
+	var result = processUserTemplate(element);
+	instruction.gridColumns = result.columns;
+	instruction.rowAttrs = result.rowAttrs;
 
 	return true;
 })
@@ -91,7 +92,8 @@ export class Grid {
 
 	// Templating
 	viewSlot;
-
+	rowTemplate;
+	rowAttrs;
 
 	// Services
 	viewCompiler;
@@ -104,8 +106,9 @@ export class Grid {
 		this.viewResources = vr;
 		this.container = container;
 
-
-		this.columns = targetInstruction.behaviorInstructions[0].gridColumns;
+		var behavior = targetInstruction.behaviorInstructions[0];
+		this.columns = behavior.gridColumns;
+		this.rowAttrs = behavior.rowAttrs;
 	}
 
 	/* === Lifecycle === */
@@ -128,30 +131,39 @@ export class Grid {
 		if(this.serverPaging && !this.serverSorting)
 			this.sortable = false;
 
-		// Build the rows then dynamically compile the table
-		// Get the table...
-		var table = this.element.querySelector("table>tbody");
-		var rowTemplate = table.querySelector("tr");
+		// The table body element will host the rows
+		var tbody = this.element.querySelector("table>tbody");
+		this.viewSlot = new ViewSlot(tbody, true, this);
 
-		// The row template will host the viewslot for the rows
-	//	this.viewSlot = new ViewSlot(rowTemplate, true, this);
+		// Get the row template too and add a repeater/class
+		var row = tbody.querySelector("tr");
 
-		// Create a fragment we will manipulate the DOM in
-		var fragment = document.createDocumentFragment();
+		this.addRowAttributes(row);
 
-		// Move the row template to the fragment
-		//fragment.appendChild(rowTemplate);
+		this.rowTemplate = document.createDocumentFragment();
+		this.rowTemplate.appendChild(row);
 
-		// Create the repeater
-//		rowTemplate.setAttribute("repeat.for", "$item of data");
-//		rowTemplate.setAttribute("class", "${ $item === $parent.selectedItem ? 'info' : '' }");
-		
+		this.buildTemplates();
+	}
+
+	addRowAttributes(row) {
+		row.setAttribute("repeat.for", "$item of data");
+		row.setAttribute("class", "${ $item === $parent.selectedItem ? 'info' : '' }");
+		// TODO: Do we allow the user to customise the row template or just
+		// provide a callback?		
 		// Copy any user specified row attributes to the row template
-		// for (var prop in this.rowAttrs) {
-  //   		if (this.rowAttrs.hasOwnProperty(prop)) {
-		// 		rowTemplate.setAttribute(prop, this.rowAttrs[prop]);
-  //       	}
-		// }	
+		for (var prop in this.rowAttrs) {
+     		if (this.rowAttrs.hasOwnProperty(prop)) {
+		 		row.setAttribute(prop, this.rowAttrs[prop]);
+      		}
+		}	
+	}
+
+	buildTemplates() {
+	
+		// Create a fragment we will manipulate the DOM in
+		var rowTemplate = this.rowTemplate.cloneNode(true);
+		var row = rowTemplate.querySelector("tr");
 
 		// Create the columns
 		 this.columns.forEach(c => {
@@ -168,14 +180,14 @@ export class Grid {
 	        	}
 			}	
 
-			fragment.appendChild(td);
+			row.appendChild(td);
 		});
 
 		// Now compile the row template
-		//var view = this.viewCompiler.compile(fragment, this.viewResources).create(this.container, this);
+		var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
 			
-		//this.viewSlot.swap(view);
-		//this.viewSlot.attached();
+		this.viewSlot.swap(view);
+		this.viewSlot.attached();
 
 		// HACK: why is the change handler not firing for noRowsMessage?
 		this.noRowsMessageChanged();
@@ -556,10 +568,11 @@ function processUserTemplate(element) {
 		cols.push(col);
 	});
 
-	return cols;
 	// Pull any row attrs into a hash object
-	// this.rowAttrs = {};
-	// var attrs = Array.prototype.slice.call(rowElement.attributes);
-	// attrs.forEach(a => this.rowAttrs[a.name] = a.value);
+	var rowAttrs = {};
+	var attrs = Array.prototype.slice.call(rowElement.attributes);
+	attrs.forEach(a => rowAttrs[a.name] = a.value);
+
+	return { columns: cols, rowAttrs: rowAttrs };
 }
 
