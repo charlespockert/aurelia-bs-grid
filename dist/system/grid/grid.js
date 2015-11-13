@@ -238,7 +238,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 					enumerable: true
 				}], null, _instanceInitializers);
 
-				function Grid(element, vc, vr, container, targetInstruction) {
+				function Grid(element, vc, vr, container, targetInstruction, bindingEngine) {
 					_classCallCheck(this, _Grid);
 
 					_defineDecoratedPropertyDescriptor(this, 'gridHeight', _instanceInitializers);
@@ -316,6 +316,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 					this.viewCompiler = vc;
 					this.viewResources = vr;
 					this.container = container;
+					this.bindingEngine = bindingEngine;
 
 					var behavior = targetInstruction.behaviorInstructions[0];
 					this.columns = behavior.gridColumns;
@@ -651,7 +652,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 
 						this.dontWatchForChanges();
 
-						if (!this.unbinding) this.subscription = bindingEngine.collectionObserver(this.cache).subscribe(function (splices) {
+						if (!this.unbinding) this.subscription = this.bindingEngine.collectionObserver(this.cache).subscribe(function (splices) {
 								_this4.refresh();
 							});
 					}
@@ -714,7 +715,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 				}], null, _instanceInitializers);
 
 				var _Grid = Grid;
-				Grid = inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction)(Grid) || Grid;
+				Grid = inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction, BindingEngine)(Grid) || Grid;
 				Grid = processContent(function (viewCompiler, viewResources, element, instruction) {
 					var result = processUserTemplate(element);
 					instruction.gridColumns = result.columns;

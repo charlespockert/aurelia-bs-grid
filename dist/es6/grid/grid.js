@@ -11,7 +11,7 @@ import {ViewCompiler, ViewSlot, ViewResources, Container} from 'aurelia-framewor
 
 	return true;
 })
-@inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction)
+@inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction, BindingEngine)
 export class Grid {
 
 	/* == Styling == */
@@ -100,11 +100,12 @@ export class Grid {
 	viewResources;
 	container;
 
-	constructor(element, vc, vr, container, targetInstruction) {
+	constructor(element, vc, vr, container, targetInstruction, bindingEngine) {
 		this.element = element;
 		this.viewCompiler = vc;
 		this.viewResources = vr;
 		this.container = container;
+		this.bindingEngine = bindingEngine;
 
 		var behavior = targetInstruction.behaviorInstructions[0];
 		this.columns = behavior.gridColumns;
@@ -492,7 +493,7 @@ export class Grid {
 		// Guard against data refresh events hitting after the user does anything that unloads the grid
 		if(!this.unbinding)
 		    // We can update the pager automagically
-		    this.subscription = bindingEngine
+		    this.subscription = this.bindingEngine
 		        .collectionObserver(this.cache)
 		        .subscribe((splices) => {
 					this.refresh();
