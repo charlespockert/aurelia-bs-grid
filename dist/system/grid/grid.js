@@ -383,7 +383,16 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 
 						var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
 
-						this.viewSlot.swap(view);
+						var removeResponse = viewSlot.removeAll();
+
+						if (removeResponse instanceof Promise) {
+							removeResponse.then(function () {
+								return viewSlot.add(view);
+							});
+						}
+
+						viewSlot.add(view);
+
 						this.viewSlot.attached();
 
 						this.noRowsMessageChanged();
