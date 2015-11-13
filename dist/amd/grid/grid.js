@@ -324,6 +324,8 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 		}, {
 			key: 'buildTemplates',
 			value: function buildTemplates() {
+				var _this = this;
+
 				var rowTemplate = this.rowTemplate.cloneNode(true);
 				var row = rowTemplate.querySelector("tr");
 
@@ -342,15 +344,15 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 
 				var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
 
-				var removeResponse = viewSlot.removeAll();
+				var removeResponse = this.viewSlot.removeAll();
 
 				if (removeResponse instanceof Promise) {
 					removeResponse.then(function () {
-						return viewSlot.add(view);
+						return _this.viewSlot.add(view);
 					});
 				}
 
-				viewSlot.add(view);
+				this.viewSlot.add(view);
 
 				this.viewSlot.attached();
 
@@ -494,13 +496,13 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 		}, {
 			key: 'applyFilter',
 			value: function applyFilter(data) {
-				var _this = this;
+				var _this2 = this;
 
 				return data.filter(function (row) {
 					var include = true;
 
-					for (var i = _this.columns.length - 1; i >= 0; i--) {
-						var col = _this.columns[i];
+					for (var i = _this2.columns.length - 1; i >= 0; i--) {
+						var col = _this2.columns[i];
 
 						if (col.filterValue !== "" && row[col.field].toString().indexOf(col.filterValue) === -1) {
 							include = false;
@@ -562,7 +564,7 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 		}, {
 			key: 'getData',
 			value: function getData() {
-				var _this2 = this;
+				var _this3 = this;
 
 				if (!this.read) throw new Error("No read method specified for grid");
 
@@ -575,13 +577,13 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 					paging: { page: this.pageNumber, size: Number(this.pageSize) },
 					filtering: this.getFilterColumns()
 				}).then(function (result) {
-					_this2.handleResult(result);
+					_this3.handleResult(result);
 
-					_this2.loading = false;
+					_this3.loading = false;
 				}, function (result) {
-					if (_this2.onReadError) _this2.onReadError(result);
+					if (_this3.onReadError) _this3.onReadError(result);
 
-					_this2.loading = false;
+					_this3.loading = false;
 				});
 			}
 		}, {
@@ -604,12 +606,12 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 		}, {
 			key: 'watchForChanges',
 			value: function watchForChanges() {
-				var _this3 = this;
+				var _this4 = this;
 
 				this.dontWatchForChanges();
 
 				if (!this.unbinding) this.subscription = _aureliaFramework.bindingEngine.collectionObserver(this.cache).subscribe(function (splices) {
-						_this3.refresh();
+						_this4.refresh();
 					});
 			}
 		}, {

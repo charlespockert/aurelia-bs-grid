@@ -186,14 +186,16 @@ export class Grid {
 		// Now compile the row template
 		var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
 
-		let removeResponse = viewSlot.removeAll();
+		// based on viewSlot.swap() from templating 0.16.0
+		let removeResponse = this.viewSlot.removeAll();
 
 	  if (removeResponse instanceof Promise) {
-	    removeResponse.then(() => viewSlot.add(view));
+	    removeResponse.then(() => this.viewSlot.add(view));
 	  }
 
-	  viewSlot.add(view);
+	  this.viewSlot.add(view);
 
+	  // code above replaces the following call
 		//this.viewSlot.swap(view);
 		this.viewSlot.attached();
 
