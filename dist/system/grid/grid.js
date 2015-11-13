@@ -1,7 +1,7 @@
 System.register(['aurelia-framework', './grid-column'], function (_export) {
 	'use strict';
 
-	var bindable, inject, bindingEngine, customElement, processContent, TargetInstruction, ViewCompiler, ViewSlot, ViewResources, Container, GridColumn, Grid;
+	var bindable, inject, BindingEngine, customElement, processContent, TargetInstruction, ViewCompiler, ViewSlot, ViewResources, Container, GridColumn, Grid;
 
 	var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -40,7 +40,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 		setters: [function (_aureliaFramework) {
 			bindable = _aureliaFramework.bindable;
 			inject = _aureliaFramework.inject;
-			bindingEngine = _aureliaFramework.bindingEngine;
+			BindingEngine = _aureliaFramework.BindingEngine;
 			customElement = _aureliaFramework.customElement;
 			processContent = _aureliaFramework.processContent;
 			TargetInstruction = _aureliaFramework.TargetInstruction;

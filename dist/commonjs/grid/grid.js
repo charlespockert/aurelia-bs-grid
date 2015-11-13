@@ -613,7 +613,7 @@ var Grid = (function () {
 
 			this.dontWatchForChanges();
 
-			if (!this.unbinding) this.subscription = _aureliaFramework.bindingEngine.collectionObserver(this.cache).subscribe(function (splices) {
+			if (!this.unbinding) this.subscription = bindingEngine.collectionObserver(this.cache).subscribe(function (splices) {
 					_this4.refresh();
 				});
 		}
