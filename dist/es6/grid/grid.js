@@ -99,6 +99,7 @@ export class Grid {
 	viewCompiler;
 	viewResources;
 	container;
+	bindingEngine;
 
 	constructor(element, vc, vr, container, targetInstruction, bindingEngine) {
 		this.element = element;
@@ -185,7 +186,11 @@ export class Grid {
 		});
 
 		// Now compile the row template
-		var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
+		var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container);
+		// Templating 17.x changes the API
+		// ViewFactory.create() no longer takes a binding context (2nd parameter)
+		// Instead, must call view.bind(context)
+		view.bind(this);
 
 		// based on viewSlot.swap() from templating 0.16.0
 		let removeResponse = this.viewSlot.removeAll();
@@ -491,6 +496,7 @@ export class Grid {
 		this.dontWatchForChanges();
 
 		// Guard against data refresh events hitting after the user does anything that unloads the grid
+
 		if(!this.unbinding)
 		    // We can update the pager automagically
 		    this.subscription = this.bindingEngine

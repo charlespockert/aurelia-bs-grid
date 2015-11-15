@@ -343,7 +343,9 @@ define(['exports', 'aurelia-framework', './grid-column'], function (exports, _au
 					row.appendChild(td);
 				});
 
-				var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
+				var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container);
+
+				view.bind(this);
 
 				var removeResponse = this.viewSlot.removeAll();
 
