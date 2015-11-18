@@ -1,4 +1,4 @@
-import {bindable, inject, bindingEngine, customElement, processContent, TargetInstruction } from 'aurelia-framework';
+import {bindable, inject, BindingEngine, customElement, processContent, TargetInstruction } from 'aurelia-framework';
 import {GridColumn} from './grid-column';
 import {ViewCompiler, ViewSlot, ViewResources, Container} from 'aurelia-framework';
 
@@ -11,7 +11,7 @@ import {ViewCompiler, ViewSlot, ViewResources, Container} from 'aurelia-framewor
 
 	return true;
 })
-@inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction)
+@inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction, BindingEngine)
 export class Grid {
 
 	/* == Styling == */
@@ -33,7 +33,7 @@ export class Grid {
 	@bindable pageSize = 10;
 	@bindable page = 1;
 	@bindable pagerSize = 10;
-	
+
 	@bindable showPageSizeBox = true;
 	@bindable showPagingSummary = true;
 	@bindable showFirstLastButtons = true;
@@ -46,7 +46,7 @@ export class Grid {
 
 	pageNumber = 1;
 
-	
+
 	// Sortination
 	@bindable serverSorting = false;
 	@bindable sortable = true;
@@ -57,11 +57,11 @@ export class Grid {
 	Trogdor = true;
 
 	// Column defs
-	@bindable autoGenerateColumns;	
+	@bindable autoGenerateColumns;
 	@bindable showColumnHeaders = true;
 	columnHeaders = [];
 	columns = [];
-	
+
 	// Selection
 	@bindable selectable = false;
 	@bindable selectedItem = null;
@@ -99,12 +99,14 @@ export class Grid {
 	viewCompiler;
 	viewResources;
 	container;
+	bindingEngine;
 
-	constructor(element, vc, vr, container, targetInstruction) {
+	constructor(element, vc, vr, container, targetInstruction, bindingEngine) {
 		this.element = element;
 		this.viewCompiler = vc;
 		this.viewResources = vr;
 		this.container = container;
+		this.bindingEngine = bindingEngine;
 
 		var behavior = targetInstruction.behaviorInstructions[0];
 		this.columns = behavior.gridColumns;
@@ -122,7 +124,7 @@ export class Grid {
 	bind(executionContext) {
 
 		// Listen for window resize so we can re-flow the grid layout
-		this.resizeListener = window.addEventListener('resize', this.syncColumnHeadersWithColumns.bind(this));	
+		this.resizeListener = window.addEventListener('resize', this.syncColumnHeadersWithColumns.bind(this));
 
 		this["$parent"] = executionContext;
 
@@ -150,17 +152,17 @@ export class Grid {
 		row.setAttribute("repeat.for", "$item of data");
 		row.setAttribute("class", "${ $item === $parent.selectedItem ? 'info' : '' }");
 		// TODO: Do we allow the user to customise the row template or just
-		// provide a callback?		
+		// provide a callback?
 		// Copy any user specified row attributes to the row template
 		for (var prop in this.rowAttrs) {
      		if (this.rowAttrs.hasOwnProperty(prop)) {
 		 		row.setAttribute(prop, this.rowAttrs[prop]);
       		}
-		}	
+		}
 	}
 
 	buildTemplates() {
-	
+
 		// Create a fragment we will manipulate the DOM in
 		var rowTemplate = this.rowTemplate.cloneNode(true);
 		var row = rowTemplate.querySelector("tr");
@@ -178,15 +180,29 @@ export class Grid {
 	    			else
 		    			td.setAttribute(prop, c[prop]);
 	        	}
-			}	
+			}
 
 			row.appendChild(td);
 		});
 
 		// Now compile the row template
-		var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
-			
-		this.viewSlot.swap(view);
+		var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container);
+		// Templating 17.x changes the API
+		// ViewFactory.create() no longer takes a binding context (2nd parameter)
+		// Instead, must call view.bind(context)
+		view.bind(this);
+
+		// based on viewSlot.swap() from templating 0.16.0
+		let removeResponse = this.viewSlot.removeAll();
+
+	  if (removeResponse instanceof Promise) {
+	    removeResponse.then(() => this.viewSlot.add(view));
+	  }
+
+	  this.viewSlot.add(view);
+
+	  // code above replaces the following call
+		//this.viewSlot.swap(view);
 		this.viewSlot.attached();
 
 		// HACK: why is the change handler not firing for noRowsMessage?
@@ -318,9 +334,9 @@ export class Grid {
 	    var pos = this.sortProcessingOrder.indexOf(field);
 
 	    if(pos > -1)
-	    	this.sortProcessingOrder.splice(pos, 1);	    
+	    	this.sortProcessingOrder.splice(pos, 1);
 
-		this.sortProcessingOrder.push(field); 
+		this.sortProcessingOrder.push(field);
 
 	    // Apply the new sort
 		this.refresh();
@@ -373,11 +389,11 @@ export class Grid {
 
 			if(col.filterValue !== "")
 				cols[col.field] = col.filterValue;
-		}		
+		}
 
 		return cols;
 	}
-	
+
 	debounce(func, wait) {
 	    var timeout;
 
@@ -406,7 +422,7 @@ export class Grid {
 			this.debouncedUpdateFilters = this.debounce(this.refresh.bind(this), this.filterDebounce || 100);
 		}
 
-		this.debouncedUpdateFilters();	
+		this.debouncedUpdateFilters();
 	}
 
 	/* === Data === */
@@ -432,10 +448,10 @@ export class Grid {
 		this.loading = true;
 
 		// Try to read from the data adapter
-		this.read({ 
-			sorting: this.sorting, 
+		this.read({
+			sorting: this.sorting,
 			paging: { page: this.pageNumber, size: Number(this.pageSize) },
-			filtering: this.getFilterColumns() 
+			filtering: this.getFilterColumns()
 		})
 		.then((result) => {
 
@@ -467,7 +483,7 @@ export class Grid {
 			this.data = result.data;
 			this.filterSortPage(this.data);
 		}
-	
+
 	    this.count = result.count;
 
 	    // Update the pager - maybe the grid options should contain an update callback instead of reffing the
@@ -480,11 +496,12 @@ export class Grid {
 		this.dontWatchForChanges();
 
 		// Guard against data refresh events hitting after the user does anything that unloads the grid
+
 		if(!this.unbinding)
 		    // We can update the pager automagically
-		    this.subscription = bindingEngine
+		    this.subscription = this.bindingEngine
 		        .collectionObserver(this.cache)
-		        .subscribe((splices) => {			
+		        .subscribe((splices) => {
 					this.refresh();
 		        });
 	}
@@ -512,7 +529,7 @@ export class Grid {
 
 		// TODO: Make this a one off
 		var cont = this.element.querySelector(".grid-content-container");
-		
+
 		if(this.gridHeight > 0) {
 			cont.setAttribute("style", "height:" + this.gridHeight + "px");
 		} else {
@@ -537,7 +554,7 @@ export class Grid {
 			if(cell && header && filter) {
 				var overflow = this.isBodyOverflowing();
 				var tgtWidth = cell.offsetWidth + (i == headers.length - 1 && overflow ? this.scrollBarWidth : 0);
-			
+
 				// Make the header the same width as the cell...
 				header.setAttribute("style", "width: " + tgtWidth + "px");
 				filter.setAttribute("style", "width: " + tgtWidth + "px");

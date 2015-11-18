@@ -1,7 +1,7 @@
 System.register(['aurelia-framework', './grid-column'], function (_export) {
 	'use strict';
 
-	var bindable, inject, bindingEngine, customElement, processContent, TargetInstruction, ViewCompiler, ViewSlot, ViewResources, Container, GridColumn, Grid;
+	var bindable, inject, BindingEngine, customElement, processContent, TargetInstruction, ViewCompiler, ViewSlot, ViewResources, Container, GridColumn, Grid;
 
 	var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -40,7 +40,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 		setters: [function (_aureliaFramework) {
 			bindable = _aureliaFramework.bindable;
 			inject = _aureliaFramework.inject;
-			bindingEngine = _aureliaFramework.bindingEngine;
+			BindingEngine = _aureliaFramework.BindingEngine;
 			customElement = _aureliaFramework.customElement;
 			processContent = _aureliaFramework.processContent;
 			TargetInstruction = _aureliaFramework.TargetInstruction;
@@ -238,7 +238,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 					enumerable: true
 				}], null, _instanceInitializers);
 
-				function Grid(element, vc, vr, container, targetInstruction) {
+				function Grid(element, vc, vr, container, targetInstruction, bindingEngine) {
 					_classCallCheck(this, _Grid);
 
 					_defineDecoratedPropertyDescriptor(this, 'gridHeight', _instanceInitializers);
@@ -316,6 +316,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 					this.viewCompiler = vc;
 					this.viewResources = vr;
 					this.container = container;
+					this.bindingEngine = bindingEngine;
 
 					var behavior = targetInstruction.behaviorInstructions[0];
 					this.columns = behavior.gridColumns;
@@ -365,6 +366,8 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 				}, {
 					key: 'buildTemplates',
 					value: function buildTemplates() {
+						var _this = this;
+
 						var rowTemplate = this.rowTemplate.cloneNode(true);
 						var row = rowTemplate.querySelector("tr");
 
@@ -381,9 +384,20 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 							row.appendChild(td);
 						});
 
-						var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container, this);
+						var view = this.viewCompiler.compile(rowTemplate, this.viewResources).create(this.container);
 
-						this.viewSlot.swap(view);
+						view.bind(this);
+
+						var removeResponse = this.viewSlot.removeAll();
+
+						if (removeResponse instanceof Promise) {
+							removeResponse.then(function () {
+								return _this.viewSlot.add(view);
+							});
+						}
+
+						this.viewSlot.add(view);
+
 						this.viewSlot.attached();
 
 						this.noRowsMessageChanged();
@@ -526,13 +540,13 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 				}, {
 					key: 'applyFilter',
 					value: function applyFilter(data) {
-						var _this = this;
+						var _this2 = this;
 
 						return data.filter(function (row) {
 							var include = true;
 
-							for (var i = _this.columns.length - 1; i >= 0; i--) {
-								var col = _this.columns[i];
+							for (var i = _this2.columns.length - 1; i >= 0; i--) {
+								var col = _this2.columns[i];
 
 								if (col.filterValue !== "" && row[col.field].toString().indexOf(col.filterValue) === -1) {
 									include = false;
@@ -594,7 +608,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 				}, {
 					key: 'getData',
 					value: function getData() {
-						var _this2 = this;
+						var _this3 = this;
 
 						if (!this.read) throw new Error("No read method specified for grid");
 
@@ -607,13 +621,13 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 							paging: { page: this.pageNumber, size: Number(this.pageSize) },
 							filtering: this.getFilterColumns()
 						}).then(function (result) {
-							_this2.handleResult(result);
+							_this3.handleResult(result);
 
-							_this2.loading = false;
+							_this3.loading = false;
 						}, function (result) {
-							if (_this2.onReadError) _this2.onReadError(result);
+							if (_this3.onReadError) _this3.onReadError(result);
 
-							_this2.loading = false;
+							_this3.loading = false;
 						});
 					}
 				}, {
@@ -636,12 +650,12 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 				}, {
 					key: 'watchForChanges',
 					value: function watchForChanges() {
-						var _this3 = this;
+						var _this4 = this;
 
 						this.dontWatchForChanges();
 
-						if (!this.unbinding) this.subscription = bindingEngine.collectionObserver(this.cache).subscribe(function (splices) {
-								_this3.refresh();
+						if (!this.unbinding) this.subscription = this.bindingEngine.collectionObserver(this.cache).subscribe(function (splices) {
+								_this4.refresh();
 							});
 					}
 				}, {
@@ -703,7 +717,7 @@ System.register(['aurelia-framework', './grid-column'], function (_export) {
 				}], null, _instanceInitializers);
 
 				var _Grid = Grid;
-				Grid = inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction)(Grid) || Grid;
+				Grid = inject(Element, ViewCompiler, ViewResources, Container, TargetInstruction, BindingEngine)(Grid) || Grid;
 				Grid = processContent(function (viewCompiler, viewResources, element, instruction) {
 					var result = processUserTemplate(element);
 					instruction.gridColumns = result.columns;
