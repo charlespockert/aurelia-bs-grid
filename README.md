@@ -6,7 +6,7 @@ A lightweight Aurelia native data-grid control (no jQuery, no unnecessary depend
 
 This is a proof of concept and probably isn't production ready by any stretch - please use primarily for educational purposes unless you don't mind fixing bugs and having a minimal set of functionality :)
 
-At some point in the future it will hopefully be a viable alternative to other data grids
+At some point in the future it will hopefully be a viable alternative to other data grids.
 
 Demo here:
 http://charlespockert.github.io/aurelia-bs-grid-demo/
@@ -14,7 +14,7 @@ http://charlespockert.github.io/aurelia-bs-grid-demo/
 ## Using the grid
 
 1. Install the plugin into your project using jspm
-  
+
   ```
   jspm install github:charlespockert/aurelia-bs-grid
   ```
@@ -25,7 +25,7 @@ http://charlespockert.github.io/aurelia-bs-grid-demo/
   ```html
     <body aurelia-app="main">
   ```
-3. Create a `main.js` file in your src directory and import the plugin using the `aurelia` configuration object 
+3. Create a `main.js` file in your src directory and import the plugin using the `aurelia` configuration object
 
   ```javascript
   export function configure(aurelia) {
@@ -68,7 +68,7 @@ The comments below show the functional parts of the grid
   </grid>
   ```
 
-You should provide a `<grid-row>` element and one or more child `<grid-col>` elements. 
+You should provide a `<grid-row>` element and one or more child `<grid-col>` elements.
 
 # &lt;grid-row&gt;
 This represents a row of bound data. Any attributes applied to this element will be forwarded to the rows generated in the grid, so you can style your rows by applying classes to this element:
@@ -90,7 +90,7 @@ The field attribute specifies which property the column should represent for sor
 
 If you don't specify this attribute the grid will throw an error
 
-## Column Templates 
+## Column Templates
 
 Anything between the column tags will be the column template. You can place any HTML markup in here and it will be picked up and compiled by Aurelia, so you can interpolate, attach event handlers, bind to expressions etc etc.
 
@@ -126,7 +126,7 @@ The grid has several bindables which allow you to configure its behaviour:
 
 **read.call="yourDataFetchMethod($event)"**
 
-This should be a method which returns a promise that resolves to a grid result object. The object should provide the grid with data and a total count of rows. 
+This should be a method which returns a promise that resolves to a grid result object. The object should provide the grid with data and a total count of rows.
 
 ```javascript
 loadData(gridArgs)
@@ -135,7 +135,7 @@ loadData(gridArgs)
       data: ...your data...,
       count: ...total number of data rows (without filters)...
     });
-  }
+  )
 }
 ```
 
@@ -143,7 +143,7 @@ The `$event` parameter is used for paging and sorting (see "server-paging" below
 
 **on-read-error.call="someFunction($event)"**
 
-Called when the promise in the read method is rejected. Receives the result of the rejection into the `$event` parameter 
+Called when the promise in the read method is rejected. Receives the result of the rejection into the `$event` parameter
 
 **pageable="true/false"**
 
@@ -153,7 +153,7 @@ Enable/disable pagination for this grid
 
 Turns on/off server paging. When this is turned on, paging should be handled by the server - the grid will pass an object to your read method that has the paging and sorting parameters for the grid
 
-It looks like this: 
+It looks like this:
 
 ```javascript
 {
@@ -195,7 +195,7 @@ Represents the currently selected item in the grid
 **no-rows-message="Sorry, no rows here!"**
 
 Message to show when there is no data in the grid. Won't show if value is "falsey"
-  
+
 **auto-load="true/false"**
 
 Auto-refreshes the data source when the grid is attached to the DOM
